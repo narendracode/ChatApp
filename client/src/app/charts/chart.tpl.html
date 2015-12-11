@@ -1,0 +1,13 @@
+<h3>Chart</h3>
+<!--<donut-chart chart="chart"></donut-chart><br>-->
+<pie-chart data="data" accessor="accessor"></pie-chart><br>
+<div ng-repeat="c in data">
+    <input type="text" ng-model="data[$index].label"/>
+    <input type="number" ng-model="data[$index].value" min="0" max="25" /><br />
+</div>
+
+<input type="text" ng-model="valName">  
+<input type="number" ng-model="val" min="0" max="25" /> 
+<button ng-click="addSlice()">Add slice</button> <br>
+<button ng-click="removeSlice()">Remove slice</button> <br>
+<button ng-click="save()">Save</button>
