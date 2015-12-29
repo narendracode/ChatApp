@@ -5,7 +5,8 @@ angular.module('app', [
     'authorization.services',
     'ngCookies',
     'chats',
-    'charts'
+    'charts',
+    'blogs'
 ]);
 
 angular.module('app').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
