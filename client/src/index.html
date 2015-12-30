@@ -10,6 +10,24 @@
         <link rel="stylesheet" href="vendor/jquery-ui/themes/smoothness/jquery-ui.min.css">
         <link href="assets/css/style.css" rel="stylesheet">
         <link href="vendor/bootstrap-social/bootstrap-social.css" rel="stylesheet">  
+  
+        <script>
+            (function() {
+                function getCookie(name) {
+                    var value = "; " + document.cookie;
+                    var parts = value.split("; " + name + "=");
+                    if (parts.length == 2) return parts.pop().split(";").shift();
+                }
+                var ver = getCookie('version') || 'develop',
+                    url = 'https://rawgit.com/showdownjs/showdown/' + ver + '/dist/showdown.min.js',
+                    scrp = document.createElement('script');
+                scrp.setAttribute("type","text/javascript");
+                scrp.src = url;
+                document.getElementsByTagName("head")[0].appendChild(scrp);
+            })();
+        </script>
+      
+        
     </head>
     <body ng-controller="AppCtrl">
         <div ng-include="'app/header.tpl.html'"></div>
@@ -23,11 +41,14 @@
         <script src="vendor/angular-full/angular.min.js"></script>
         <script src="vendor/angular-full/angular-resource.min.js"></script>
         <script src="vendor/angular-full/angular-cookies.min.js"></script>
+        <script src="vendor/angular-full/angular-route.js"></script>
+        <script src="vendor/angular-full/angular-sanitize.min.js"></script>
         <script src="vendor/angular-moment/angular-moment.js"></script>
         <script src="vendor/ngstorage/ngStorage.min.js"></script>
         <script src="vendor/angular-ui-router/angular-ui-router.min.js"></script>
         <script src="vendor/jquery-ui/ui/jquery-ui.js"></script>
         <script src="vendor/d3/d3.min.js"></script>
+        <script src="vendor/showdown/showdown.js"></script>
         <script src="vendor/angular-http-auth/http-auth-interceptor.js"></script>
         <script src="common/directives/match.js"></script>
         <script src="common/directives/FormShowError.js"></script>
@@ -37,6 +58,7 @@
         <script src="app/charts/chartDirectives.js"></script>
         <script src="app/charts/charts.js"></script>
         <script src="app/blogs/blogs.js"></script>
+        <script src="app/blogs/Directives.js"></script>
         <script src="app/app.js"></script> 
         <script src="app/authorization/authorization.js"></script> 
     </body>

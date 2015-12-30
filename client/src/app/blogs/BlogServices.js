@@ -1,0 +1,1 @@
+var module = angular.module('blog.services',['ngResource','ngCookies','ngStorage']);
