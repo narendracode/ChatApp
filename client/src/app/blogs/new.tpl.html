@@ -14,7 +14,7 @@
     
     <div class="col-md-10">
         <h2>Create</h2>
-        <form ng-submit="submit()">
+        <form ng-submit="createBlog()">
             <div class="form-group">
                 <label for="title">Title</label>
                 <input ng-model="blog.title"  type="text" class="form-control" autofocus  id="title" placeholder="Title">
@@ -27,7 +27,7 @@
            
             <div class="form-group">
                 <label>
-                    <input type="checkbox"> Publish
+                    <input ng-model="blog.status" type="checkbox"> Publish
                 </label>
             </div>
             <button type="submit" class="btn btn-danger">Submit</button>
