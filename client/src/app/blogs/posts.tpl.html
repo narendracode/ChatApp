@@ -12,6 +12,14 @@
 
    
     <div class="col-md-10">
+       
+       <!-- Alert msg start-->
+        <div ng-if="sharedDateMsg" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{sharedDateMsg}}
+        </div>
+        <!-- Alert msg end-->
+       
         <div class="jumbotron" ng-repeat="blog in blogs"> 
             <lt-markdown></lt-markdown>           
             <div>
@@ -28,6 +36,9 @@
             <div class="col-md-1">
                 <button type="button" class="btn btn-danger" ng-click="delete('sm',blog._id)">
                 Delete</button>
+            </div>
+            <div>
+                <h3>About the Author</h3>
             </div>
         </div>
     </div>
