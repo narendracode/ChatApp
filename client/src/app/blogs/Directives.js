@@ -10,7 +10,7 @@ module.directive('ltMarkdown', function() {
         compile: function(tElement, tAttrs, transclude){
             var markdown = tElement.text();
             return function(scope, element, attrs) {
-                scope.$watch('blog.body', function(data){
+                scope.$watch('blog.content', function(data){
                     scope.markdown = ( data ) ? converter.makeHtml(data) : '';
                 })
             }

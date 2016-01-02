@@ -1,4 +1,4 @@
-angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services']);
+angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate']);
 angular.module('blogs').config(['$stateProvider','$urlRouterProvider',
                                 function($stateProvider,$urlRouterProvider){
                                     // $urlRouterProvider.otherwise("/blog*");
@@ -19,6 +19,14 @@ angular.module('blogs').config(['$stateProvider','$urlRouterProvider',
                                          url: '/blog/new',
                                          templateUrl : 'app/blogs/new.tpl.html',
                                          controller : 'BlogsController',
+                                         resolve : {
+
+                                         }
+                                     })
+                                    .state('blog_edit',{
+                                         url: '/blog/edit/:id',
+                                         templateUrl : 'app/blogs/edit.tpl.html',
+                                         controller : 'BlogsEditController',
                                          resolve : {
 
                                          }
@@ -84,17 +92,90 @@ angular.module('blogs').run(function($rootScope, $location){
 //$stateParams
 
 angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService',             function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService){
-    
-    if($stateParams.id){
-        console.log("$$$$$ id from stateparams : "+$stateParams.id);
-    }else
-        console.log("$$$$$ id from stateparams : null");
+    var blogService = new BlogService();    
+    blogService.$get({id:$stateParams.id},function(result){
+        $scope.blog = result;
+    });
 }]);
 
 
-angular.module('blogs').controller('BlogsController',['$scope','$resource','$state','$location','$rootScope', 'BlogService',                                                function($scope,$resource,$state,$location,$rootScope,BlogService){
+angular.module('blogs').controller('BlogsEditController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService',             function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService){
+    var blogService = new BlogService();
+    
+    blogService.$get({id:$stateParams.id},function(result){
+        $scope.blog = result;
+    });
+    
+    $scope.updateBlog = function(){
+        blogService.body = $scope.blog.body;
+        blogService.title = $scope.blog.title;
+
+        blogService.$update({id:$scope.blog._id},function(result){
+            if(result)
+                $location.path("/blog/posts/"+result._id)
+        });
+    }
+    
+}]);
+
+
+angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInstance','blog_id','BlogService','$resource',function ($scope, $uibModalInstance, blog_id,BlogService,$resource) {
     var blogService = new BlogService();
     var BlogResource = $resource('/blog/:id');
+    
+    $scope.blog_id = blog_id;
+
+    $scope.ok = function () {
+        console.log("Blog deleted : "+$scope.blog_id);
+        blogService.$delete({id:$scope.blog_id},function(result){
+            $uibModalInstance.close($scope.blog_id);
+        });
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+}
+                                                       
+]);
+
+
+
+angular.module('blogs').controller('BlogsController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal',                                             function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal){
+    var blogService = new BlogService();
+    var BlogResource = $resource('/blog/:id');
+
+    $scope.animationsEnabled = true;
+    
+    
+    $scope.delete = function (size,blog_id) {
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'deleteModal.tpl.html',
+            controller: 'ModalInstanceCtrl',
+            size: size,
+            resolve: {
+                blog_id : function(){
+                    console.log(" inside resolve BlogsController .. : "+blog_id);
+                    return blog_id;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (blog_id) {
+            console.log("####### blog id deleted : "+blog_id);
+            BlogResource.query(function(results){
+                $scope.blogs = results;
+            });
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        }); 
+    };
+    
+    
+    BlogResource.query(function(results){
+        $scope.blogs = results;
+    });
     
     
     var loadAllBlogs = function(){
@@ -105,15 +186,23 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
     
     $scope.createBlog = function(){
         var blogResource = new BlogResource();
-        blogResource.body = $scope.blog.body;
+        blogResource.content = $scope.blog.content;
         blogResource.title = $scope.blog.title;
         blogResource.createdBy = $rootScope.currentUser;
         
         blogResource.$save(function(result){
-            $scope.blog.body = '';
+            $scope.blog.content = '';
             $scope.blog.title = '';
             console.log("result after saving : "+JSON.stringify(result));
-            $location.path("/blog/")
+            $location.path("/blog/posts")
+        });
+    }
+    
+    
+    $scope.editBlog = function(_id){
+        blogService.$get({id:_id},function(result){
+            $scope.blog = result;
+            $location.path("/blog/edit/"+_id)
         });
     }
     

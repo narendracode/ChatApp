@@ -1,1 +1,36 @@
-Single Post
+<div class="row">
+    <div class="col-md-2">
+        <a type="button" ng-href="#/blog/new" class="btn btn-success btn-lg">New Post</a>
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="#/blog/posts">Posts</a></li> 
+            <!-- published Blog posts by logged in user himself-->
+            
+            <li role="presentation"><a href="#/blog/drafts">Drafts</a></li>
+            <!-- Draft posts by logged in user himself-->
+
+            <li role="presentation"><a href="#/blog/published">Published</a></li>
+            <!-- published Blog posts inclluding others-->
+        </ul>
+    </div>
+
+
+    <div class="col-md-10">
+        <div class="jumbotron"> 
+            <lt-markdown></lt-markdown>           
+            <div>
+                <a href="#/blogs/{{blog._id}}"><h2>{{blog.title}}</h2></a> 
+            </div>
+            <hr>
+            <div ng-bind-html = 'markdown'>
+                {{blog.content}}
+            </div>
+            <hr>
+            <div class="col-md-1">
+                <a type="button" href="#/blog/edit/{{blog._id}}"class="btn btn-info">Edit</a>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
