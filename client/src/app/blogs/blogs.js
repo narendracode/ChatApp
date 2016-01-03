@@ -1,4 +1,4 @@
-angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate']);
+angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard']);
 angular.module('blogs').config(['$stateProvider','$urlRouterProvider',
                                 function($stateProvider,$urlRouterProvider){
                                     // $urlRouterProvider.otherwise("/blog*");
@@ -166,10 +166,22 @@ angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInsta
 ]);
 
 
-angular.module('blogs').controller('BlogCreateController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal', 'ShareDataService', '$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,ShareDataService,$timeout,$interval){
-
+angular.module('blogs').controller('BlogCreateController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal','Upload', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,Upload,ShareDataService,$timeout,$interval){
+    $scope.images = [];
+    $scope.profilePic = '/files/profile.png';
     var blogService = new BlogService();
     var BlogResource = $resource('/blog/:id');
+    
+    $scope.textToCopy = 'I can copy by clicking!';
+
+    $scope.success = function () {
+        console.log('Copied!');
+    };
+
+    $scope.fail = function (err) {
+        console.error('Error!', err);
+    };
+    
     
     $scope.createBlog = function(){
         var blogResource = new BlogResource();
@@ -185,6 +197,38 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
         });
     }
 
+    
+    $scope.upload = function (file) {
+        Upload.upload({
+            url: 'blog/upload',
+            data: {file: file, 'username': 'hello'}
+        }).then(function (resp) {
+            console.log('Success ' + resp.config.data.file.name + '   uploaded. Response: ' + JSON.stringify(resp.data));
+            console.log($location.protocol() + "://" + $location.host() + ":" + $location.port());
+           // $scope.profilePic = '/files/'+resp.data.file.name;
+            $scope.profilePic = $location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name;
+            $scope.images.push($location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name);
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        });
+    };
+    
+    
+    // for multiple files:
+   /* $scope.uploadFiles = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                Upload.upload({..., data: {file: files[i]}, ...})...;
+            }
+            // or send them all together for HTML5 browsers:
+            Upload.upload({..., data: {file: files}, ...})...;
+        }
+    };
+    */
+    
 }]);
 
 

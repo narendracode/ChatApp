@@ -23,7 +23,9 @@
     "passport-facebook":"*",
     "angular": "^1.3.2",
     "showdown": "1.x",
-    "angular-sanitize": "^1.3.2"
+    "angular-sanitize": "^1.3.2",
+    "connect-multiparty":"*",
+    "multer":"*"
 },
   "devDependencies": {
      "grunt":"*",

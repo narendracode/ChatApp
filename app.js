@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var config = require('./config/config');
 var mongoose = require("mongoose");
 var passport = require('passport');
-
+var multipart = require('connect-multiparty');
 
 var app = express();
 
@@ -22,6 +22,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(multipart({
+    uploadDir: '/Users/narendra/Documents/workspace/NodeJsWorkspace/ChatApp/tmp'
+}));
 
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,6 +41,8 @@ app.use('/src',express.static(path.join(__dirname, 'client/src')));
 app.use('/app',express.static(path.join(__dirname, 'client/src/app')));
 app.use('/common',express.static(path.join(__dirname, 'client/src/common')));
 app.use('/assets',express.static(path.join(__dirname, 'client/src/assets')));
+app.use('/files',express.static(path.join(__dirname,'uploads')));
+
 var connect = function(){
     var options = {
         server: {

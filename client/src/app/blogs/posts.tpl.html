@@ -30,6 +30,7 @@
                 {{blog.content}}
             </div>
             <hr>
+            <div class="row">
             <div class="col-md-1">
                 <a type="button" href="#/blog/edit/{{blog._id}}"class="btn btn-info">Edit</a>
             </div>
@@ -37,8 +38,9 @@
                 <button type="button" class="btn btn-danger" ng-click="delete('sm',blog._id)">
                 Delete</button>
             </div>
-            <div>
-                <h3>About the Author</h3>
+            </div>
+            <div class="row">
+                <h4>Author</h3>
             </div>
         </div>
     </div>
