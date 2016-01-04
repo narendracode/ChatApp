@@ -29,7 +29,9 @@
             <div ng-bind-html = 'markdown'>
                 {{blog.content}}
             </div>
-            <hr>
+          
+            <!--
+                <hr>
             <div class="row">
             <div class="col-md-1">
                 <a type="button" href="#/blog/edit/{{blog._id}}"class="btn btn-info">Edit</a>
@@ -40,8 +42,12 @@
             </div>
             </div>
             <div class="row">
-                <h4>Author</h3>
+                <h4>Author </h4>
+                {{blog.created_by.name}}
             </div>
+            -->
+            
+            
         </div>
     </div>
 </div>

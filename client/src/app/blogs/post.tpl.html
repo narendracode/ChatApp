@@ -18,22 +18,26 @@
         <div class="jumbotron"> 
             <lt-markdown></lt-markdown>           
             <div>
-                <a href="#/blogs/{{blog._id}}"><h2>{{blog.title}}</h2></a> 
+                <h2>{{blog.title}}</h2>
             </div>
             <hr>
             <div ng-bind-html = 'markdown'>
                 {{blog.content}}
             </div>
             <hr>
-            <div class="col-md-1">
-                <a type="button" href="#/blog/edit/{{blog._id}}"class="btn btn-info">Edit</a>
+            <div class="row">
+                <div class="col-md-1">
+                    <a type="button" href="#/blog/edit/{{blog._id}}"class="btn btn-info">Edit</a>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger" ng-click="delete('sm',blog._id)">
+                        Delete</button>
+                </div>                
             </div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-danger" ng-click="delete('sm',blog._id)">
-                    Delete</button>
-            </div>
-            <div>
-                <h3>About the Author</h3>
+
+            <div class="row">
+                <h4>Author </h4>
+                {{blog.created_by.name}}
             </div>
         </div>
     </div>
