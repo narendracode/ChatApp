@@ -200,7 +200,12 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
     
     $scope.progressPercentage = 0.0;
     
+    var resetProgressBar = function(){
+        $scope.progressPercentage = 0.0;
+    };
+    
     $scope.upload = function (file) {
+       // $scope.progressPercentage = 0.0;
         Upload.upload({
             url: 'blog/upload',
             data: {file: file, 'username': 'hello'}
@@ -209,13 +214,19 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
             console.log($location.protocol() + "://" + $location.host() + ":" + $location.port());
             $scope.profilePic = $location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name;
             $scope.images.push($location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name);
-            $scope.progressPercentage = 0.0;
+            //$scope.progressPercentage = 0.0;
         }, function (resp) {
             console.log('Error status: ' + resp.status);
         }, function (evt) {
            // var psgPercentage = parseInt(100.0 * evt.loaded / evt.total);
             $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             console.log('progress: ' + $scope.progressPercentage + '% ' + evt.config.data.file.name);
+            
+            if($scope.progressPercentage === 100.0){
+               // resetProgressBar();
+              //  $scope.progressPercentage = 0.0;
+            }
+            
         });
     };
     

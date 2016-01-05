@@ -3145,7 +3145,7 @@ fieldset[disabled] .input-group-btn .btn-default.active {
   background-color: #f3f4f5;
   min-width: 220px;
   border: none;
-  margin-top: 9px;
+ /* margin-top: 9px;*/
   padding: 0;
   font-size: 14px;
   border-radius: 4px;
@@ -4283,7 +4283,7 @@ select[multiple].navbar-form .select2-search input[type="text"] {
 }
 .navbar-nav > li > .dropdown-menu {
   min-width: 100%;
-  margin-top: 9px;
+/*  margin-top: 9px;*/
   border-radius: 4px;
 }
 @media (max-width: 767px) {

@@ -14,6 +14,7 @@
     
     <div class="col-md-10">
         <h2>Create</h2>
+
         <form ng-submit="createBlog()">
             <div class="form-group">
                 <label for="title">Title</label>
@@ -88,23 +89,30 @@
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-9">
-       <h4>Click on image to copy it's path</h4>
-        <div class="progress" ng-if="progressPercentage">
-            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{progressPercentage}}%">
-                <span class="sr-only">{{progressPercentage}}% Complete (success)</span>
-           </div>
-       </div>
-        <div class="col-md-2" ng-repeat="image in images">
-            <a  clipboard text="image" on-copied="success()" on-error="fail(err)">
-               <img src="{{image}}" class="img-rounded"  height="200" width="170">
-           </a> 
-        </div>
+      <div class="row">
+          <h4>Click on image to copy it's path</h4>
+
+          <div ng-hide="progressPercentage===100 || progressPercentage==0.0">
+              <div class="progress" >
+                  <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{progressPercentage}}%">
+                      <span class="sr-only">{{progressPercentage}}% Complete (success)</span>
+                  </div>
+              </div>
+          </div>
+
+          <div class="col-md-2" ng-repeat="image in images">
+              <a  clipboard text="image" on-copied="success()" on-error="fail(err)">
+                  <img src="{{image}}" class="img-rounded"  height="150" width="150">
+              </a> 
+          </div>
+      </div>
+       
     </div>
 </div>
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10">
-        <a class="btn btn-info" ngf-select="upload($file)">Upload Image</a>
+        <a class="btn btn-info"  ngf-select="upload($file)">Upload Image</a>
     </div>
 </div>
 
@@ -124,3 +132,8 @@
         </div>
     </div>
 </div>
+
+
+
+
+
