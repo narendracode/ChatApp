@@ -4,13 +4,29 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var fs = require('fs');
 var config = require('./config/config');
 var mongoose = require("mongoose");
 var passport = require('passport');
 var multipart = require('connect-multiparty');
+var FileStreamRotator = require('file-stream-rotator');
+var moment = require('moment');
+
+var winston = require('winston');
 
 var app = express();
+
+var logDirectory = __dirname + '/log'
+
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
+
+
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(__dirname + '/log/access-'+moment().format('d-MM-YYYY')+'.log', {flags: 'a'})
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,7 +34,14 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+
+//app.use(logger('dev')); // writes only to console
+
+app.use(logger('combined', {stream: accessLogStream})) //writes to file in log directory
+
+winston.add(winston.transports.File, { filename: __dirname+'/log/main-'+moment().format('d-MM-YYYY')+'.log'});
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -51,6 +74,7 @@ var connect = function(){
             }
         }
     };
+    winston.log('info', 'connected to mongo db with config url : '+config.db);
     mongoose.connect(config.db,options);
 };
 connect();
