@@ -14,7 +14,12 @@ function($stateProvider,$urlRouterProvider){
       url: "/signup/",
       templateUrl : 'app/authorization/signup.tpl.html',
       controller: 'AuthController'
-    });
+    })
+    .state('settings',{
+         url: "/settings/",
+         templateUrl : 'app/authorization/settings.tpl.html',
+         controller: 'SettingsController'
+     });
 }
 ]);
 
@@ -22,6 +27,15 @@ angular.module('chats').factory('chatsocket',function(){
     var socket = io.connect("http://localhost:3000");
     return socket;
 });
+
+angular.module('authorization').controller('SettingsController',['$scope','$resource','$state','$location','AuthService','$window','$rootScope',
+ function($scope,$resource,$state,$location,AuthService,$window,$rootScope){
+     //$location.protocol() + "://" + $location.host() + ":" + $location.port()                    
+     $scope.profilePic = $location.protocol() + "://" + $location.host() + ":" + $location.port()+"/files/profile.png";
+     
+     
+     
+}]);
 
 
 angular.module('authorization').controller('AuthController',['$scope','$resource','$state','$location','AuthService','$window','$rootScope','chatsocket',

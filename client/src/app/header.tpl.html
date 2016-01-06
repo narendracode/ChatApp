@@ -16,21 +16,18 @@
                 <li ng-show="currentUser"><a href="/#/chart/">Charts</a></li>
                 <li ng-hide="currentUser"><a href="/#/login/">Login</a></li>
                 <li ng-hide="currentUser"><a href="/#/signup/">Signup</a></li>
-                <li ng-show="currentUser"><a ng-click="logout()">Logout</a></li>
+
                 <li ng-show="currentUser">
                     <a  class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{currentUser.name}}<span class="caret"></span>
                     </a>
                 
                     <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+                        <li><a href="/#/settings/"><span class="glyphicon glyphicon-cog" ></span>Settings</a></li>
+                        <li><a ng-click="logout()"><span class="glyphicon glyphicon-off" aria-hidden="true"></span>Logout</a></li>
                     </ul>
-                
                 </li>
+                
             </ul>
         </div>
     </div>

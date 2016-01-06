@@ -30,6 +30,10 @@ var userSchema = mongoose.Schema({
         email        : String,
         name         : String
     },
+    name: {type: String, default:null},
+    address: {type: String, default:null},
+    about: {type: String, default:null},
+    phone:{type:String, default:},
     token : String,
     sockets :[String]
 });

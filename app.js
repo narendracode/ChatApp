@@ -35,8 +35,6 @@ app.set('view engine', 'jade');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 
-//app.use(logger('dev')); // writes only to console
-
 app.use(logger('combined', {stream: accessLogStream})) //writes to file in log directory
 
 winston.add(

@@ -1,3 +1,19 @@
+.bs-docs-footer {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-top: 100px;
+    color: #99979c;
+    text-align: center;
+    background-color: #34495e;
+}
+
+.profilePicBox{
+    height: 150px;
+    width: 150px;
+}
+
+
+
 .form-group .help-block {
   display: none;
 }
