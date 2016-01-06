@@ -5,7 +5,7 @@ var socket = require('../../authorization/models/SocketModel');
 var ObjectId = mongoose.Types.ObjectId;
 var fs = require('fs');
 var multer = require('multer');
-
+var winston = require('winston');
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
         console.log(" store destination is called file name :"+file.name+"   ,path : "+file.path);
@@ -47,6 +47,7 @@ exports.uploadImg = function(req,res){
 };
 
 exports.getBlogs = function(req,res){
+    winston.log('info', ' Blog controller getBlogs is called');
     Blog.find({},function(err,result){
         if(err){
             res.send(err);

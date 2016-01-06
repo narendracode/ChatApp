@@ -24,7 +24,7 @@ fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
 
 
 // create a write stream (in append mode)
-var accessLogStream = fs.createWriteStream(__dirname + '/log/access-'+moment().format('d-MM-YYYY')+'.log', {flags: 'a'})
+var accessLogStream = fs.createWriteStream(__dirname + '/log/access-'+moment().format('DD-MM-YYYY')+'.log', {flags: 'a'})
 
 
 
@@ -39,7 +39,16 @@ app.set('view engine', 'jade');
 
 app.use(logger('combined', {stream: accessLogStream})) //writes to file in log directory
 
-winston.add(winston.transports.File, { filename: __dirname+'/log/main-'+moment().format('d-MM-YYYY')+'.log'});
+winston.add(
+    winston.transports.File, 
+    {
+        filename: __dirname+'/log/main-'+moment().format('DD-MM-YYYY')+'.log',
+        timestamp: function() {
+            //return Date.now();
+            return moment().format('DD-MM-YYYY hh:mm:ss');
+        }
+    }
+);
 
 
 app.use(bodyParser.json());
