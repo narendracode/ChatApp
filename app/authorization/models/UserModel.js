@@ -33,7 +33,7 @@ var userSchema = mongoose.Schema({
     name: {type: String, default:null},
     address: {type: String, default:null},
     about: {type: String, default:null},
-    phone:{type:String, default:},
+    phone:{type:String, default: null},
     token : String,
     sockets :[String]
 });
