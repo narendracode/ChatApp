@@ -1,9 +1,10 @@
 angular.module('authorization',['ngResource','ui.router','ui.bootstrap.showErrors','validation.match','authorization.services']);
 
-angular.module('authorization').config(['$stateProvider','$urlRouterProvider',
+angular.module('authorization').config(['$stateProvider','$urlRouterProvider','$httpProvider',
 
-function($stateProvider,$urlRouterProvider){
+    function($stateProvider,$urlRouterProvider,$httpProvider){
     $urlRouterProvider.otherwise("/");
+    $httpProvider.interceptors.push('AuthHttpRequestInterceptor');
      $stateProvider
      .state('login', {
       url: "/login/",

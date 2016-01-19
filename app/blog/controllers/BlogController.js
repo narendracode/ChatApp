@@ -47,7 +47,7 @@ exports.uploadImg = function(req,res){
 };
 
 exports.getBlogs = function(req,res){
-    winston.log('info', ' Blog controller getBlogs is called');
+   winston.log('info', ' Blog controller getBlogs is called');
     Blog.find({},function(err,result){
         if(err){
             res.send(err);
@@ -71,10 +71,11 @@ exports.create = function(req,res){
     blog.content = req.body.content;
     blog.title = req.body.title;
     blog.status = req.body.status;
-    blog.created_by.name = req.body.createdBy.name;
-    blog.created_by.email = req.body.createdBy.email;
+
+    blog.created_by.name = req.user.name;
+    blog.created_by.email = req.user.email;
     
-    console.log(JSON.stringify(blog));
+    winston.log("Create  blog data :"+JSON.stringify(blog));
     
     blog.save(function(err,result){
         if(err){

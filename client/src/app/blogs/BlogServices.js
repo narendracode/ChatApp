@@ -1,5 +1,17 @@
 var module = angular.module('blog.services',['ngResource']);
 
+
+module.factory("AuthHttpRequestInterceptor", 
+               function ($localStorage) {
+    return {
+        request: function (config) {
+            if($localStorage.token)
+                config.headers["Authorization"] = 'bearer '+ $localStorage.token; 
+            return config;
+        }
+    };
+});
+
 module.factory('BlogService',function($resource){
     return $resource('blog/:id', 
                      {

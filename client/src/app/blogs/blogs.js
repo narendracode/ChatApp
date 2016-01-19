@@ -1,7 +1,10 @@
 angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard']);
-angular.module('blogs').config(['$stateProvider','$urlRouterProvider',
-                                function($stateProvider,$urlRouterProvider){
+angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProvider',
+                                function($stateProvider,$urlRouterProvider,$httpProvider){
                                     // $urlRouterProvider.otherwise("/blog*");
+                                    
+                                    $httpProvider.interceptors.push('AuthHttpRequestInterceptor');
+                                    
                                      $stateProvider
                                          .state('blog',{
                                          url: '/blog/',
@@ -153,6 +156,12 @@ angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInsta
 
     $scope.ok = function () {    
         blogService.$delete({id:$scope.blog_id},function(result){
+            
+            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                console.log("You are not authorized for this..");
+                $location.path("/")
+            }
+            
             ShareDataService.addMsg("You have successfully deleted the blog.");
             $uibModalInstance.close($scope.blog_id);
         });
@@ -276,6 +285,12 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
         modalInstance.result.then(function (blog_id) {
             $scope.sharedDateMsg = ShareDataService.getMsg();
             BlogResource.query(function(results){
+               
+                if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                    console.log("You are not authorized for this..");
+                    $location.path("/")
+                }
+                
                 $scope.blogs = results;
             });
             
@@ -290,6 +305,11 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
     
     
     BlogResource.query(function(results){
+        if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+            console.log("You are not authorized for this..");
+            $location.path("/")
+        }
+        
         $scope.blogs = results;
     });
     
@@ -302,6 +322,10 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
     
     $scope.editBlog = function(_id){
         blogService.$get({id:_id},function(result){
+            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                console.log("You are not authorized for this..");
+                $location.path("/")
+            }
             $scope.blog = result;
             $location.path("/blog/edit/"+_id)
         });
@@ -313,6 +337,10 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
         blogResource.title = $scope.blog.title;
          
         $scope.blogService.$update({id:_id},function(result){
+            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                console.log("You are not authorized for this..");
+                $location.path("/")
+            }
             $location.path("/blog/")
         });
     }
@@ -320,6 +348,10 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
     $scope.getBlog = function(_id){
         blogService = new BlogService();
         blogService.$get({id : _id},function(result){
+            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                console.log("You are not authorized for this..");
+                $location.path("/")
+            }
             $scope.blog = result;
             $location.path("/blog/"+_id+"/")
         });

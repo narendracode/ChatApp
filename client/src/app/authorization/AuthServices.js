@@ -1,6 +1,14 @@
 var module = angular.module('authorization.services',['ngResource','ngCookies','ngStorage']);
 
-
+module.factory("AuthHttpRequestInterceptor",function ($localStorage) {
+    return {
+        request: function (config) {
+            if($localStorage.token)
+                config.headers["Authorization"] = 'bearer '+ $localStorage.token; 
+            return config;
+        }
+    };
+});
 
 module.factory('AuthService',function($resource,$rootScope,$location,$cookieStore,$localStorage){
 
@@ -8,6 +16,15 @@ module.factory('AuthService',function($resource,$rootScope,$location,$cookieStor
   var LogoutResource = $resource('/auth/logout');
   var SignupResource = $resource('/auth/signup'); 
 
+  function parseToken(token){
+        var user = {};
+        if(token){
+            var encoded = token.split('.')[1];
+            user = JSON.parse(urlBase64Decode(encoded));
+        }
+        return user;  
+    }
+    
   function urlBase64Decode(str) {
        var output = str.replace('-', '+').replace('_', '/');
        switch (output.length % 4) {
@@ -46,8 +63,9 @@ module.factory('AuthService',function($resource,$rootScope,$location,$cookieStor
         if(typeof result !== 'undefined'){
             if(result.type){
                 $localStorage.token = result.token;
-                $cookieStore.put('user',result.data);
-                $rootScope.currentUser = result.data;
+                var user = parseToken(result.token);
+                console.log(" data after login : "+JSON.stringify(user));
+                $rootScope.currentUser = user;
             }
         }
 		callback(result);
@@ -71,8 +89,10 @@ module.factory('AuthService',function($resource,$rootScope,$location,$cookieStor
         if(typeof result !== 'undefined'){
             if(result.type){
                 $localStorage.token = result.token;
-                $cookieStore.put('user',result.data);
-                $rootScope.currentUser = result.data;
+                console.log(" data after sign up : "+JSON.stringify(result));
+                var user = parseToken(result.token);
+                // $cookieStore.put('user',user);
+                $rootScope.currentUser = user;
             }
         }
 		callback(result);
@@ -86,7 +106,7 @@ module.factory('AuthService',function($resource,$rootScope,$location,$cookieStor
              userData = JSON.parse(urlBase64Decode(encoded));
              userData.type = true;
              if(userData){
-                $cookieStore.put('user',userData);
+               // $cookieStore.put('user',userData);
 				$rootScope.currentUser = userData;
              }
              callback(userData);

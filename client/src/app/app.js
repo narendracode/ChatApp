@@ -1,6 +1,7 @@
 angular.module('app', [
     'ngResource',
     'ui.router',
+    'ngStorage',
     'authorization',
     'authorization.services',
     'ngCookies',
@@ -26,19 +27,13 @@ angular.module('app').factory('chatsocket',function(){
 }); 
 
 
-angular.module('app').controller('AppCtrl', ['$scope','$cookieStore','$location','AuthService','$rootScope','chatsocket', function($scope,$cookieStore,$location,AuthService,$rootScope,chatsocket) {
+angular.module('app').controller('AppCtrl', ['$scope','$cookieStore','$location','AuthService','$rootScope','chatsocket','$localStorage', function($scope,$cookieStore,$location,AuthService,$rootScope,chatsocket,$localStorage) {
     $scope.myInit = function(){
-        AuthService.currentUser(function(result){
-            if(result['status']){
-                if(result['status']==404){
-                    $rootScope.currentUser = null;               
-                }
-            }
-            if(result.type){
-                chatsocket.emit('user:login',{email: $rootScope.currentUser.email});
-            }
-        });
-        $rootScope.currentUser = $cookieStore.get('user');
+        if($localStorage.token){
+            AuthService.currentUser(function(result){
+                console.log("Current user AppCtrl : "+JSON.stringify(result));
+            });
+        }
     };
     
     var accessLevels = {
@@ -57,19 +52,22 @@ angular.module('app').controller('AppCtrl', ['$scope','$cookieStore','$location'
     }
 
 
-
     $scope.logout = function(){
         chatsocket.emit('user:logout',{email: $rootScope.currentUser.email});
         AuthService.logout(function(result){
             console.log("Response after logout: "+JSON.stringify(result));
-            //if(result['status']==200){
             $rootScope.currentUser = null;
             $location.path('/login/');
-            //}
         });
     } 
 }]);
 
 angular.module('app').controller('HeaderCtrl', ['$scope','$location','AuthService', function($scope,$location,AuthService) {    
-
+    $scope.logout = function(){
+        AuthService.logout(function(result){
+            console.log("Response after logout: "+JSON.stringify(result));
+            $rootScope.currentUser = null;
+            $location.path('/login/');
+        });
+    } 
 }]);

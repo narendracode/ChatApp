@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- "4.1.1"
+services:
+- mongodb
+install:
+- npm install
+- npm install -g forever
+before_script:
+- npm start
+script:
+- npm test

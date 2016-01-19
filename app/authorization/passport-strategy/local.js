@@ -31,13 +31,13 @@ exports.signupStrategy = new LocalStrategy({
                             });
                         }
                         var cert = fs.readFileSync('key.pem');
-                        var token = jwt.sign({email: user.local.email, role : user.role, name : user.local.name}, cert, { algorithm: 'RS256'});
+                        var token = jwt.sign({email: user.local.email, role : user.role, name : user.local.name}, cert, { algorithm: 'HS512'});
                         user.token = token;
                         user.save(function(err,user1){
                             if(err){
                                 return done(null, { type : false,data: 'Error occured '+ err});
                             }
-                            return done(null, {type : true, data: {email: user1.local.email, role : user1.role, name: user1.local.name}, token : user1.token});
+                            return done(null, {type : true, token : user1.token});
                         }); 
                     });   
                }
@@ -64,7 +64,7 @@ exports.loginStrategy = new LocalStrategy({
                 if(!user.validPassword(password)){
                     return done(null, {type: false, 'data': 'Password is wrong.'}); 
 				}
-                return done(null, {type : true, data: {email: user.local.email, role : user.role, name: user.local.name},token : user.token});
+                return done(null, {type : true, token : user.token});
             });    
         });
     }                                      

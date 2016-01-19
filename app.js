@@ -11,6 +11,7 @@ var passport = require('passport');
 var multipart = require('connect-multiparty');
 var FileStreamRotator = require('file-stream-rotator');
 var moment = require('moment');
+var jwt = require('express-jwt'); 
 
 var winston = require('winston');
 
@@ -88,6 +89,28 @@ connect();
 mongoose.connection.on('error',console.log);
 mongoose.connection.on('disconnected',connect);
 require('./app/authorization/passport')(passport); //settting up passport config
+
+var cert = fs.readFileSync('key.pem');
+
+//app.use(jwt({ secret: cert}));// uncomment for making all APIs private
+
+app.use(jwt({ secret: cert}).unless({path: ['/auth/signup',
+                                            '/auth/login',
+                                            '/auth/userinfo',
+                                            '/auth/logout'
+                                           // ,'/blog'
+                                           // ,'/blog/:id'
+                                           ]})); // API end point in path are public 
+
+app.use(function(err, req, res, next){
+    console.log(" ##### Err "+err);
+    if (err.constructor.name === 'UnauthorizedError') {
+        //res.status(401).send('Unauthorized');
+        res.json([{type:false,cause:"UNAUTHORIZED",msg:"You are not authorized to access this."}]);
+    }
+});
+
+
 require('./config/routes')(app);
 require('./config/express')(app);
 
