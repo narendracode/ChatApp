@@ -92,8 +92,6 @@ angular.module('blogs').run(function($rootScope, $location){
     });
 });
 
-//$stateParams
-
 angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,$uibModal,ShareDataService){
     var blogService = new BlogService();   
    // var shareDataService = new ShareDataService();
@@ -177,6 +175,10 @@ angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInsta
 
 angular.module('blogs').controller('BlogCreateController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal','Upload', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,Upload,ShareDataService,$timeout,$interval){
     $scope.images = [];
+    $scope.blog = {
+        title:'',
+        content:''
+    };
     $scope.profilePic = '/files/profile.png';
     var blogService = new BlogService();
     var BlogResource = $resource('/blog/:id');
@@ -224,6 +226,10 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
             $scope.profilePic = $location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name;
             $scope.images.push($location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name);
             //$scope.progressPercentage = 0.0;
+            var img =  "\n \n ![Alt text]("+$location.protocol() + "://" + $location.host() + ":" + $location.port()+'/files/'+resp.data.file.name+">)";
+            
+            
+            $scope.blog.content = $scope.blog.content.concat(img);
         }, function (resp) {
             console.log('Error status: ' + resp.status);
         }, function (evt) {
@@ -234,6 +240,8 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
             if($scope.progressPercentage === 100.0){
                // resetProgressBar();
               //  $scope.progressPercentage = 0.0;
+                
+               
             }
             
         });
