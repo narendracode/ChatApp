@@ -1,7 +1,12 @@
-Web socket based Chat Application using MEAN stack.
+### Websocket Based Chat Application using MEAN stack.
+
+[![Build Status](https://travis-ci.org/narendrasoni1989/ChatApp.svg?branch=master)](https://travis-ci.org/narendrasoni1989/ChatApp)
+
 
 D3.js based pie chart with Websocket.
 
 Markdown bloging feature.
 
 Travis CI, integrated.
+
+
