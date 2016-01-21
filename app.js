@@ -55,7 +55,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(multipart({
-    uploadDir: '/Users/narendra/Documents/workspace/NodeJsWorkspace/ChatApp/tmp'
+    uploadDir: config.tmp
 }));
 
 app.use(function(req, res, next) {
@@ -91,8 +91,6 @@ mongoose.connection.on('disconnected',connect);
 require('./app/authorization/passport')(passport); //settting up passport config
 
 var cert = fs.readFileSync('key.pem');
-
-//app.use(jwt({ secret: cert}));// uncomment for making all APIs private
 
 app.use(jwt({ secret: cert}).unless({path: ['/auth/signup',
                                             '/auth/login',

@@ -155,7 +155,7 @@ angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInsta
     $scope.blog_id = blog_id;
 
     $scope.ok = function () {    
-        blogService.$delete({id:$scope.blog_id},function(result){
+        blogService.$delete({id:$scope.blog_id},function(results){
             
             if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
                 console.log("You are not authorized for this..");
@@ -196,7 +196,7 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
         var blogResource = new BlogResource();
         blogResource.content = $scope.blog.content;
         blogResource.title = $scope.blog.title;
-        blogResource.createdBy = $rootScope.currentUser;
+       // blogResource.createdBy = $rootScope.currentUser;
 
         blogResource.$save(function(result){
             $scope.blog.content = '';

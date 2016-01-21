@@ -1,21 +1,6 @@
 var passport = require('passport');
 var User  = require('../models/UserModel.js');
 
-exports.cleanSockets = function(callback){
-    User.update({},{ $set : { sockets : [] } },{multi : true},callback);
-};
-
-exports.facebookLogin = function(req,res,next){
-	passport.authenticate('facebook-login',{scope:'email'})(req,res,next);
-}
-
-exports.facebookLoginCallback = function(req,res,next){
-	passport.authenticate('facebook-login',
-	{
-		successRedirect:'/',
-		failureRedirect:'/login'
-	})(req,res,next);
-}
 
 exports.localSignup =   function(req, res, next){    
     passport.authenticate('local-signup',function(err, user, info){
@@ -25,6 +10,18 @@ exports.localSignup =   function(req, res, next){
             return res.json(user);
     })(req, res, next);
 }
+
+
+exports.deleteLocalUser = function(req,res,next){
+    console.log(" in delete user  email : "+req.body.email);
+    User.remove({"local.email" : req.body.email},function(err){
+        if(err)
+            res.json({type:false,data: 'error occured '+ err});
+
+        res.json({type:true,data: 'user deleted successfully with email '+ req.body.email});
+    });
+}
+
 
 exports.localLogin = function(req, res, next){
     passport.authenticate('local-login',function(err, user, info){
@@ -47,48 +44,18 @@ exports.logout = function(req, res) {
   }
 };
 
+exports.cleanSockets = function(callback){
+    User.update({},{ $set : { sockets : [] } },{multi : true},callback);
+};
 
-/**
- * Session
- * returns info on authenticated user
- */
-exports.isUserAuthenticated = function(req,res){
-    if(req.user){
-         res.json({'message':true});
-    }else{
-        res.json({'message':false});
-    }
+exports.facebookLogin = function(req,res,next){
+    passport.authenticate('facebook-login',{scope:'email'})(req,res,next);
 }
 
-exports.getCurentUserInfo = function(req, res) {
-    if(req.user){
-         res.json(req.user);
-    }else{
-        res.json({'status':404,'message':'no user found','role':'none'});
-    }
-};
-
-exports.getLoggedInUserInfoByToken = function(req,res){
-    var token = req.params.token;
-     User.findOne({ 'token' :  token }, function(err, user) {
-        if (err){
-            res.json({type:false, data: "Error occured: "+ err});
-        }
-        else if(!(!!user)){
-            res.json({'status':404,'message':'no user found','role':'none'});
-        }
-        else res.json(user);
-     });
-};
-function ensureAuthorized(req, res, next) {
-    var bearerToken;
-    var bearerHeader = req.headers["authorization"];
-    if (typeof bearerHeader !== 'undefined') {
-        var bearer = bearerHeader.split(" ");
-        bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();
-    } else {
-        res.send(403);
-    }
+exports.facebookLoginCallback = function(req,res,next){
+    passport.authenticate('facebook-login',
+                          {
+        successRedirect:'/',
+        failureRedirect:'/login'
+    })(req,res,next);
 }

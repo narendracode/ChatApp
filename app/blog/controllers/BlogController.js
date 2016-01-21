@@ -6,6 +6,8 @@ var ObjectId = mongoose.Types.ObjectId;
 var fs = require('fs');
 var multer = require('multer');
 var winston = require('winston');
+var config = require('../../../config/config.js');
+
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
         console.log(" store destination is called file name :"+file.name+"   ,path : "+file.path);
@@ -17,7 +19,7 @@ var storage =   multer.diskStorage({
     }
 });
 //var upload = multer({ storage : storage}).single('userPhoto');
-var upload = multer({ dest : '/Users/narendra/Documents/workspace/NodeJsWorkspace/ChatApp/uploads'}).single('userPhoto');
+var upload = multer({ dest : config.upload}).single('userPhoto');
 
 
 exports.uploadImg = function(req,res){
@@ -47,7 +49,6 @@ exports.uploadImg = function(req,res){
 };
 
 exports.getBlogs = function(req,res){
-   winston.log('info', ' Blog controller getBlogs is called');
     Blog.find({},function(err,result){
         if(err){
             res.send(err);
@@ -75,12 +76,11 @@ exports.create = function(req,res){
     blog.created_by.name = req.user.name;
     blog.created_by.email = req.user.email;
     
-    winston.log("Create  blog data :"+JSON.stringify(blog));
-    
     blog.save(function(err,result){
         if(err){
             res.send(err);
         }
+        winston.log(" Blog created : "+JSON.stringify(result));
         res.json(result);
     });
 };

@@ -70,7 +70,7 @@ angular.module('authorization').controller('AuthController',['$scope','$resource
                          $scope.loginErrorMessage = result['data'];
                     }else{
                         console.log(" $$$ response from AuthService.login, info returned : "+JSON.stringify(result));
-                       chatsocket.emit('user:login',{email: $rootScope.currentUser.email});
+                       //chatsocket.emit('user:login',{email: $rootScope.currentUser.email});
                         $location.path("/") 
                     }
                  });
@@ -79,7 +79,7 @@ angular.module('authorization').controller('AuthController',['$scope','$resource
 
         $scope.logout = function(){
             console.log('$$$$$ logout called.. ');
-           chatsocket.emit('user:logout',{email: $rootScope.currentUser.email});
+          // chatsocket.emit('user:logout',{email: $rootScope.currentUser.email});
             AuthService.logout(function(result){
                 if(result['status'] == 200){
                     $location.path('/login/');

@@ -18,10 +18,6 @@ router.put('/:id',blogController.update); //update existing blog
 
 router.delete('/:id',blogController.delete); //deelte existing blog
 
-//router.post('/upload',blogController.upload); //file upload
-
-//router.post('/upload',blogController.uploadImage); //file upload
-
 router.post('/upload',blogController.uploadImg);
 
 module.exports = router;

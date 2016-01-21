@@ -1,4 +1,6 @@
 module.exports = {
-    db: 'mongodb://localhost/chatappdb_test',
-    privateKey: 'test-private-key'
+    db: 'mongodb://127.0.0.1/chatappdb_test',
+    privateKey: 'test-private-key',
+    tmp:'./tmp',
+    upload:'./uploads'
 };
