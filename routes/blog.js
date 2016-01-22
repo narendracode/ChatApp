@@ -10,7 +10,9 @@ var upload = multer({
 
 router.post('/',blogController.create); //create new blog
 
-router.get('/',blogController.getBlogs); //return all blogs
+router.get('/',blogController.getBlogs); //return all published blogs by everyone
+router.get('/drafts',blogController.getAllDraftBlogs); // return all draft blogs by logged in user.
+router.get('/published',blogController.getAllPublished); //return all published blogs by logged in user.
 
 router.get('/:id',blogController.get);  //return single blog by id
 

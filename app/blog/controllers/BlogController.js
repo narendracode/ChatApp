@@ -64,23 +64,35 @@ exports.uploadImg = function(req,res){
 };
 
 exports.getBlogs = function(req,res){
-  /*  Blog.find({}).sort({'last_updated_at':1},function(err,result){
-        if(err){
-           // winston.log('info',"error occured : "+err);
-            winston.error("error occured : "+err);
-            console.log("Error occured : "+err);
-            res.send(err);
-        }
-        res.json(result);
-    });
-   */
-    Blog.find({},function(err,result){
+ Blog.find({'status':'Published'}).sort({'last_updated_at':-1}).exec(function(err,result){
         if(err){
             res.send(err);
         }
         res.json(result);
     });
 };
+
+
+exports.getAllDraftBlogs = function(req,res){
+ Blog.find({'created_by.email':req.user.email,'status':'Draft'}).sort({'last_updated_at':-1}).exec(function(err,result){
+        if(err){
+            res.send(err);
+        }
+        res.json(result);
+    });
+};
+
+exports.getAllPublished = function(req,res){
+ Blog.find({'created_by.email':req.user.email,'status':'Published'}).sort({'last_updated_at':-1}).exec(function(err,result){
+        if(err){
+            res.send(err);
+        }
+        res.json(result);
+    });
+};
+
+
+
 
 exports.get = function(req,res){
     id = new ObjectId(req.params.id);
@@ -103,10 +115,12 @@ exports.create = function(req,res){
     
     blog.save(function(err,result){
         if(err){
-            res.send(err);
+            res.json({'type':false,'msg':'Problem occurred while creating blogs'});
         }
-        winston.log(" Blog created : "+JSON.stringify(result));
-        res.json(result);
+        var data = result.toObject();
+        data.type = true;
+        winston.log(" Blog created : "+JSON.stringify(data));
+        res.json(data);
     });
 };
 

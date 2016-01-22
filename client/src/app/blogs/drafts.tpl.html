@@ -10,7 +10,37 @@
         </ul>
     </div>
 
+
     <div class="col-md-10">
-        <h2>Drafts</h2>
+        <!-- Alert msg start-->
+        <div ng-if="sharedDateMsg" class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{sharedDateMsg}}
+        </div>
+        <!-- Alert msg end-->
+
+        <div class="jumbotron" ng-repeat="blog in blogs"> 
+            <lt-markdown></lt-markdown>           
+            <div>
+                <a href="#/blog/posts/{{blog._id}}"><h2>{{blog.title}}</h2></a> 
+            </div>
+            <hr>
+            <div ng-bind-html = 'markdown'>
+                {{blog.content}}
+            </div>
+        </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="deleteModal.tpl.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Delete Blog Post</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete this Blog post?
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

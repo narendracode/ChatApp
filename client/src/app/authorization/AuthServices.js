@@ -113,11 +113,6 @@ module.factory('AuthService',function($resource,$rootScope,$location,$cookieStor
          }else
            callback({type: false, message:"no user found"});
     }
-  
-     /*,
-     changePassword: function(){},
-     removeUser: functionk(){}
-      */
   }
   return service;
   

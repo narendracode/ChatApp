@@ -37,7 +37,7 @@ angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProv
                                      .state('blog_drafts',{
                                          url: '/blog/drafts',
                                          templateUrl : 'app/blogs/drafts.tpl.html',
-                                         controller : 'BlogsController',
+                                         controller : 'BlogsDraftController',
                                          resolve : {
 
                                          }
@@ -61,7 +61,7 @@ angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProv
                                     .state('blog_published',{
                                          url: '/blog/published',
                                          templateUrl : 'app/blogs/published.tpl.html',
-                                         controller : 'BlogsController',
+                                         controller : 'BlogsPublishedController',
                                          resolve : {
 
                                          }
@@ -124,6 +124,38 @@ angular.module('blogs').controller('BlogDetailsController',['$scope','$resource'
     };
  
 }]);
+
+
+
+
+
+angular.module('blogs').controller('BlogsPublishedController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal', 'ShareDataService', '$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,ShareDataService,$timeout,$interval){
+    var BlogResource = $resource('/blog/published/:id');
+
+    BlogResource.query(function(results){
+        if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+            console.log("You are not authorized for this..");
+            $location.path("/")
+        }
+        $scope.blogs = results;
+    });
+}]);
+
+angular.module('blogs').controller('BlogsDraftController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal', 'ShareDataService', '$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,ShareDataService,$timeout,$interval){
+    var BlogResource = $resource('/blog/drafts/:id');
+
+    BlogResource.query(function(results){
+        if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+            console.log("You are not authorized for this..");
+            $location.path("/")
+        }
+
+        $scope.blogs = results;
+    });
+
+}]);
+
+
 
 
 angular.module('blogs').controller('BlogsEditController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService',             function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService){
@@ -198,13 +230,31 @@ angular.module('blogs').controller('BlogCreateController',['$scope','$resource',
         var blogResource = new BlogResource();
         blogResource.content = $scope.blog.content;
         blogResource.title = $scope.blog.title;
-       // blogResource.createdBy = $rootScope.currentUser;
+        if($scope.blog.status){
+            blogResource.status = 'Published';
+        }else
+            blogResource.status = 'Draft';
 
         blogResource.$save(function(result){
             $scope.blog.content = '';
             $scope.blog.title = '';
-            ShareDataService.addMsg('Your successfully posted the blog.');
-            $location.path("/blog/posts")
+           
+            if(result.type){
+                ShareDataService.addMsg('Your successfully saved the blog as draft');
+                if(result.status === 'Draft'){
+                    $location.path("/blog/drafts")
+                }
+                if(result.status === 'Published'){
+                    ShareDataService.addMsg('Your successfully published the blog.');
+                    $location.path("/blog/published")
+                }
+            }
+            
+            if(!result.type){
+                //do nothing
+                console.log(result.msg);
+            }
+           
         });
     }
 

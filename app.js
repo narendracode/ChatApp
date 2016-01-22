@@ -101,8 +101,9 @@ app.use(jwt({ secret: cert}).unless({path: ['/auth/signup',
                                            ]})); // API end point in path are public 
 
 app.use(function(err, req, res, next){
-    console.log(" ##### Err "+err);
+  
     if (err.constructor.name === 'UnauthorizedError') {
+        console.log(" ##### Err "+err);
         //res.status(401).send('Unauthorized');
         res.json([{type:false,cause:"UNAUTHORIZED",msg:"You are not authorized to access this."}]);
     }
