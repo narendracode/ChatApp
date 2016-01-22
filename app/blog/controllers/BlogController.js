@@ -7,7 +7,7 @@ var fs = require('fs');
 var multer = require('multer');
 var winston = require('winston');
 var config = require('../../../config/config.js');
-
+var gm = require('gm');
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
         console.log(" store destination is called file name :"+file.name+"   ,path : "+file.path);
@@ -24,6 +24,7 @@ var upload = multer({ dest : config.upload}).single('userPhoto');
 
 exports.uploadImg = function(req,res){
     console.log(" File log : "+req.files.file.name+"    ,path: "+req.files.file.path);
+    winston.log('info', " File log : "+req.files.file.name+"    ,path: "+req.files.file.path);
     var s = req.files.file.path.split("/");    
     // get the temporary location of the file
     var tmp_path = req.files.file.path;
@@ -32,6 +33,20 @@ exports.uploadImg = function(req,res){
    
     var target_path = './uploads/' + s[s.length - 1];
     
+    //check file size
+    
+   /* 
+   install imagemagick
+   gm('/Users/narendra/Desktop/image.jpg')
+        .size(function (err, size) {
+        if (!err){
+            winston.log(" error occured : "+err);
+            console.log(size.width > size.height ? 'wider' : 'taller than you');
+        }
+        winston.log('info'," file height : "+size.height+" ,file  width : "+size.width);
+    });
+    */
+    winston.log('info','checkpoint');
     // move the file from the temporary location to the intended location
     fs.rename(tmp_path, target_path, function(err) {
         if (err) throw err;

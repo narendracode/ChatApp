@@ -9,4 +9,6 @@ Markdown bloging feature.
 
 Travis CI, integrated.
 
+Demo at : http://nodejs-nodenarendra.rhcloud.com
+
 
