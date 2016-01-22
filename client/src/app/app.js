@@ -62,7 +62,7 @@ angular.module('app').controller('AppCtrl', ['$scope','$cookieStore','$location'
     } 
 }]);
 
-angular.module('app').controller('HeaderCtrl', ['$scope','$location','AuthService', function($scope,$location,AuthService) {    
+angular.module('app').controller('HeaderCtrl', ['$scope','$location','AuthService','$rootScope', function($scope,$location,AuthService,$rootScope) {    
     $scope.logout = function(){
         AuthService.logout(function(result){
             console.log("Response after logout: "+JSON.stringify(result));
