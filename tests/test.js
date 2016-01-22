@@ -84,7 +84,8 @@ describe('Express rest API test', function() {
                 .post(blogBaseUrl)
                 .send({
                 content : "test content",
-                    title : "test title"
+                    title : "test title",
+                    status: "Published"
                 })
                 .set('Authorization', 'bearer '+token)
                 .end(function(e,res){
