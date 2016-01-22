@@ -7,6 +7,8 @@ install:
 - npm install
 - npm install -g forever
 before_script:
+- sleep 15
 - npm start
+- sleep 15
 script:
 - npm test
