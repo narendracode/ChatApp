@@ -64,6 +64,16 @@ exports.uploadImg = function(req,res){
 };
 
 exports.getBlogs = function(req,res){
+  /*  Blog.find({}).sort({'last_updated_at':1},function(err,result){
+        if(err){
+           // winston.log('info',"error occured : "+err);
+            winston.error("error occured : "+err);
+            console.log("Error occured : "+err);
+            res.send(err);
+        }
+        res.json(result);
+    });
+   */
     Blog.find({},function(err,result){
         if(err){
             res.send(err);

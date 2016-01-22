@@ -5,6 +5,7 @@ module.factory("AuthHttpRequestInterceptor",
                function ($localStorage) {
     return {
         request: function (config) {
+            console.log(" ## Authorization Request :   "+$localStorage.token);
             if($localStorage.token)
                 config.headers["Authorization"] = 'bearer '+ $localStorage.token; 
             return config;

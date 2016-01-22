@@ -154,17 +154,15 @@ describe('Express rest API test', function() {
         
         it('#DELETE BLOG BY ID', function (done) {
             superagent
-                .get(blogBaseUrl+'/'+blog_id)
+                .del(blogBaseUrl+'/'+blog_id)
                 .send({
                 
                 })
                 .set('Authorization', 'bearer '+token)
                 .end(function(e,res){
                 expect(e).to.eql(null);
-                expect(res.body.title).to.eql("test title updated");
-                expect(res.body.content).to.eql("content updated");
-                expect(res.body.created_by.email).to.eql("test@test.com");
-                expect(res.body.created_by.name).to.eql("tester");
+                expect(res.body.ok).to.eql(1);
+                expect(res.body.n).to.eql(1);
                 done();
             })
         });
