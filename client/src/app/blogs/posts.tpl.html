@@ -23,7 +23,7 @@
         <div class="jumbotron" ng-repeat="blog in blogs"> 
             <lt-markdown></lt-markdown>           
             <div>
-                <a href="#/blog/posts/{{blog._id}}"><h2>{{blog.title}}</h2></a> 
+                <a href="#/blog/posts/{{blog.url}}"><h2>{{blog.title}}</h2></a> 
             </div>
             <hr>
             <div ng-bind-html = 'markdown'>

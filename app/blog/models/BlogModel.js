@@ -6,6 +6,7 @@ var blogSchema = mongoose.Schema({
     status : { type: String, default: 'Draft'},
     created_at: { type: Date, default: Date.now },
     last_updated_at: { type: Date, default: Date.now },
+    url : {type: String, default: null},
     created_by :{
         name: {type: String, default: null},
         email:  {type: String, default: null}

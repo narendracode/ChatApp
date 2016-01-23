@@ -27,7 +27,7 @@ angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProv
                                          }
                                      })
                                     .state('blog_edit',{
-                                         url: '/blog/edit/:id',
+                                         url: '/blog/edit/:url',
                                          templateUrl : 'app/blogs/edit.tpl.html',
                                          controller : 'BlogsEditController',
                                          resolve : {
@@ -51,7 +51,7 @@ angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProv
                                          }
                                      })
                                     .state('blog_post_detail',{
-                                         url: '/blog/posts/:id',
+                                         url: '/blog/posts/:url',
                                          templateUrl : 'app/blogs/post.tpl.html',
                                          controller : 'BlogDetailsController',
                                          resolve : {
@@ -92,13 +92,20 @@ angular.module('blogs').run(function($rootScope, $location){
     });
 });
 
-angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,$uibModal,ShareDataService){
-    var blogService = new BlogService();   
-   // var shareDataService = new ShareDataService();
+angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','BlogUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,BlogUrlService,$uibModal,ShareDataService){
+    //var blogService = new BlogService();   
+   
+    // var shareDataService = new ShareDataService();
+    var blogUrlService = new BlogUrlService();
     
-    blogService.$get({id:$stateParams.id},function(result){
+   /* blogService.$get({id:$stateParams.id},function(result){
         $scope.blog = result;
     });
+   */ 
+    blogUrlService.$get({url:$stateParams.url},function(result){
+        $scope.blog = result;
+    });
+    
     
     
     $scope.delete = function (size,blog_id) {
@@ -132,6 +139,14 @@ angular.module('blogs').controller('BlogDetailsController',['$scope','$resource'
 angular.module('blogs').controller('BlogsPublishedController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal', 'ShareDataService', '$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,ShareDataService,$timeout,$interval){
     var BlogResource = $resource('/blog/published/:id');
 
+    if(ShareDataService.getMsg()){
+        $scope.sharedDateMsg = ShareDataService.getMsg();
+        $timeout(function(){
+            ShareDataService.addMsg('');
+            $scope.sharedDateMsg = '';
+        }, 3000);
+    }
+    
     BlogResource.query(function(results){
         if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
             console.log("You are not authorized for this..");
@@ -144,6 +159,15 @@ angular.module('blogs').controller('BlogsPublishedController',['$scope','$resour
 angular.module('blogs').controller('BlogsDraftController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal', 'ShareDataService', '$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,ShareDataService,$timeout,$interval){
     var BlogResource = $resource('/blog/drafts/:id');
 
+    
+    if(ShareDataService.getMsg()){
+        $scope.sharedDateMsg = ShareDataService.getMsg();
+        $timeout(function(){
+            ShareDataService.addMsg('');
+            $scope.sharedDateMsg = '';
+        }, 3000);
+    }
+    
     BlogResource.query(function(results){
         if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
             console.log("You are not authorized for this..");
@@ -158,20 +182,34 @@ angular.module('blogs').controller('BlogsDraftController',['$scope','$resource',
 
 
 
-angular.module('blogs').controller('BlogsEditController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService',             function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService){
+angular.module('blogs').controller('BlogsEditController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','BlogUrlService',             function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,BlogUrlService){
     var blogService = new BlogService();
+    var blogUrlService = new BlogUrlService();
     
-    blogService.$get({id:$stateParams.id},function(result){
+  /*  blogService.$get({id:$stateParams.id},function(result){
         $scope.blog = result;
+    });
+    */
+    blogUrlService.$get({url:$stateParams.url},function(result){
+        $scope.blog = result;
+        if($scope.blog.status === 'Published'){
+            $scope.blog.status = true;
+        }else
+            $scope.blog.status = false;
+        
     });
     
     $scope.updateBlog = function(){
-        blogService.body = $scope.blog.body;
+        blogService.content = $scope.blog.content;
         blogService.title = $scope.blog.title;
-
+        if($scope.blog.status){
+            blogService.status = 'Published';
+        }else
+            blogService.status = 'Draft';
+        
         blogService.$update({id:$scope.blog._id},function(result){
             if(result)
-                $location.path("/blog/posts/"+result._id)
+                $location.path("/blog/posts/"+result.url)
         });
     }
     
@@ -391,9 +429,12 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
     
     $scope.updateBlog = function(_id){
         blogService = new BlogService();
-        blogResource.body = $scope.blog.body;
+        blogResource.body = $scope.blog.content;
         blogResource.title = $scope.blog.title;
          
+        
+        
+        
         $scope.blogService.$update({id:_id},function(result){
             if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
                 console.log("You are not authorized for this..");

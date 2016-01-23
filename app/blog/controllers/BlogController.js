@@ -8,6 +8,50 @@ var multer = require('multer');
 var winston = require('winston');
 var config = require('../../../config/config.js');
 var gm = require('gm');
+var BlogUrl = require('../models/BlogUrlModel');
+var getSlug = require('speakingurl');
+
+var slug = function(title){
+    return getSlug(title);
+}
+
+    var formatURL = function(cnt,url){
+          var len = cnt.toString().length;
+          if(cnt == 0)
+             return url;
+          if(len == 1){
+              return  url.substring(0,url.length - cnt.toString().length + 2) + cnt;
+          }else
+              return url.substring(0,(url.length) - (cnt.toString().length - 1)) + cnt;
+  };
+
+var generateUrl = function(url,callback){
+    var blogUrl = new BlogUrl();
+    var urlFound;
+    var count=0;
+    (function loop() {
+        checkUrl(url,function(result){
+            if(Number(result) > 0){
+                count++;
+                url = formatURL(count,url);
+                loop();
+            }else{
+            blogUrl.url = url;
+            blogUrl.save(function(err,result){
+                console.log(" new Blog URL Created : "+JSON.stringify(result));
+            });
+                callback(url);
+            }
+        })
+    }());
+}
+
+var checkUrl = function(url,callback){
+    return BlogUrl.count({'url':url},function(err, count){
+        callback(count);
+    });
+}
+
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
         console.log(" store destination is called file name :"+file.name+"   ,path : "+file.path);
@@ -92,8 +136,6 @@ exports.getAllPublished = function(req,res){
 };
 
 
-
-
 exports.get = function(req,res){
     id = new ObjectId(req.params.id);
     Blog.findById({_id: id},function(err,result){
@@ -104,6 +146,17 @@ exports.get = function(req,res){
     });
 };
 
+exports.getByUrl = function(req,res){
+    Blog.findOne({url: req.params.url},function(err,result){
+        if(err){
+            res.send(err);
+        }
+        res.json(result);
+    });
+};
+
+
+
 exports.create = function(req,res){
     var blog = new Blog();
     blog.content = req.body.content;
@@ -113,6 +166,9 @@ exports.create = function(req,res){
     blog.created_by.name = req.user.name;
     blog.created_by.email = req.user.email;
     
+    generateUrl(slug(blog.title),function(url){
+        blog.url = url;
+
     blog.save(function(err,result){
         if(err){
             res.json({'type':false,'msg':'Problem occurred while creating blogs'});
@@ -121,6 +177,7 @@ exports.create = function(req,res){
         data.type = true;
         winston.log(" Blog created : "+JSON.stringify(data));
         res.json(data);
+    });
     });
 };
 
@@ -134,12 +191,23 @@ exports.update = function(req,res){
             }
             blog.title = req.body.title;
             blog.content = req.body.content;
-            blog.save(function(err,result){  
-                if(err)
-                    res.send(err);
-                res.json(result);
+            blog.status = req.body.status;
+
+            blog.created_by.name = req.user.name;
+            blog.created_by.email = req.user.email;
+        generateUrl(slug(blog.title),function(url){
+            blog.url = url;
+            blog.save(function(err,result){
+                if(err){
+                    res.json({'type':false,'msg':'Problem occurred while updating blog'});
+                }
+                var data = result.toObject();
+                data.type = true;
+                winston.log(" Blog updated : "+JSON.stringify(data));
+                res.json(data);
             });
-        });
+        });    
+    });
     }catch(e){
         res.send(404);
     }

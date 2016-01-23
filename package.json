@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "forever start ./bin/www",
-    "stop":"forever stop ./bin/www",
-    "test":"./node_modules/mocha/bin/mocha ./tests/*"
+    "stop": "forever stop ./bin/www",
+    "test": "./node_modules/mocha/bin/mocha ./tests/*"
   },
   "dependencies": {
     "angular": "^1.3.2",
@@ -32,6 +32,7 @@
     "serve-favicon": "~2.1.3",
     "showdown": "1.x",
     "socket.io": "^1.3.7",
+    "speakingurl": "^8.0.2",
     "winston": "^2.1.1"
   },
   "devDependencies": {

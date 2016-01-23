@@ -31,6 +31,25 @@ module.factory('BlogService',function($resource){
 });
 
 
+module.factory('BlogUrlService',function($resource){
+    return $resource('blog/:url', 
+                     {
+        url: '@url'
+    },
+                     {
+        'update': { method:'PUT' }
+    },
+                     {
+        'get': { method: 'GET', isArray: false }
+    },
+                     {
+        'delete': { method: 'DELETE'}
+    }
+                    );
+});
+
+
+
 module.factory('ShareDataService',function(){
     var data = {
         message : ''
