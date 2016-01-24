@@ -31,7 +31,7 @@ exports.signupStrategy = new LocalStrategy({
                             });
                         }
                         var cert = fs.readFileSync('key.pem');
-                        var token = jwt.sign({email: user.local.email, role : user.role, name : user.local.name}, cert, { algorithm: 'HS512'});
+                        var token = jwt.sign({email: user.local.email, role : user.role, name : user.local.name, _id:user._id}, cert, { algorithm: 'HS512'});
                         user.token = token;
                         user.save(function(err,user1){
                             if(err){

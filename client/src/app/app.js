@@ -1,13 +1,14 @@
 angular.module('app', [
-    'ngResource',
-    'ui.router',
-    'ngStorage',
-    'authorization',
-    'authorization.services',
-    'ngCookies',
-    'chats',
-    'charts',
-    'blogs'
+    'ngResource'
+    ,'ui.router'
+    ,'ngStorage'
+    ,'authorization'
+    ,'authorization.services'
+    ,'ngCookies'
+    ,'chats'
+    ,'charts'
+    ,'blogs'
+    ,'groups'
 ]);
 
 angular.module('app').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {

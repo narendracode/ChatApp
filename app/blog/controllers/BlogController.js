@@ -156,7 +156,6 @@ exports.getByUrl = function(req,res){
 };
 
 
-
 exports.create = function(req,res){
     var blog = new Blog();
     blog.content = req.body.content;
