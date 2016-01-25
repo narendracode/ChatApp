@@ -1,0 +1,35 @@
+
+
+<div class="row">
+    <div class="col-md-2">
+        <ul class="nav nav-pills nav-stacked">
+            <!-- <li role="presentation" class="active"><a href="#">Home</a></li>-->
+            <li role="presentation"><a href="/#/group">Groups</a></li>
+            <li role="presentation"><a href="/#/group/new">Create New Group</a></li>
+        </ul> 
+    </div>
+    <div class="col-md-10">
+
+
+<h3>{{group.name}}</h3>
+<div>
+   <h4>Details</h4>
+    <div class="highlight">
+        <h5>{{group.description}}</h5>
+        <h5>{{group.created_at}}</h5>
+        <h5>{{group.group_type}}</h5>
+    </div>   
+</div>
+
+
+<div class="row">
+        <div class="col-md-1">
+            <a type="button" href="#/group/edit/{{group.url}}"class="btn btn-info">Edit</a>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-danger" ng-click="delete('sm',group._id)">
+                Delete</button>
+        </div>                
+</div>
+    </div>
+</div>

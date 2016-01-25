@@ -5,7 +5,6 @@ module.factory("AuthHttpRequestInterceptor",
                function ($localStorage) {
     return {
         request: function (config) {
-            console.log(" ## Authorization Request :   "+$localStorage.token);
             if($localStorage.token)
                 config.headers["Authorization"] = 'bearer '+ $localStorage.token; 
             return config;
@@ -32,9 +31,9 @@ module.factory('GroupService',function($resource){
 
 
 module.factory('GroupUrlService',function($resource){
-    return $resource('group/:url', 
+    return $resource('group/url/:url', 
                      {
-        url: '@url'
+        url : '@url'
     },
                      {
         'update': { method:'PUT' }

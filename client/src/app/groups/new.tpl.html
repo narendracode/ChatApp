@@ -7,6 +7,29 @@
         </ul> 
     </div>
     <div class="col-md-10">
-        <h3>Create New Group</h3>
+        <h3>Create Group</h3>
+        <form ng-submit="createGroup()">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input ng-model="group.name"  type="text" class="form-control" autofocus  id="name" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea ng-model="group.description" class="form-control" style="width:100%; height:100px;" id="content" placeholder="description">
+                </textarea>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input ng-model="group.group_type" type="checkbox"> Private
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label for="members">Members</label>
+            </div>
+            
+            <button type="submit" class="btn btn-danger">Submit</button>
+        </form>
     </div>
 </div>

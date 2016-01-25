@@ -6,7 +6,7 @@ var groupSchema = mongoose.Schema({
     name : {type: String, default: null},
     created_at : { type: Date, default: Date.now },
     last_updated_at: { type: Date, default: Date.now },
-    type : { type:String, default:'public'},
+    group_type : { type:String, default:'public'},
     members : [{ type: Schema.Types.ObjectId, ref: 'User'}],
     created_by : { type: Schema.Types.ObjectId, ref: 'User' },
     is_active : { type: Number, default: 1 },

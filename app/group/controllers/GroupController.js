@@ -4,24 +4,27 @@ var User = require('../../authorization/models/UserModel');
 var ObjectId = mongoose.Types.ObjectId;
 var getSlug = require('speakingurl');
 var GroupUrl = require('../models/GroupUrlModel');
+var BlogUrl = require('../../blog/models/BlogUrlModel');
+var winston = require('winston');
 
 exports.create = function(req,res){
     var group = new Group();
     group.description = req.body.description;
     group.name = req.body.name;
-    group.type = req.body.type;
-    group.created_by = req.user._id;
-    if(req.body.members){
+    group.group_type = req.body.group_type;
+    group.created_by = new ObjectId(req.user._id);
+   /* if(req.body.members){
         for (i = 0; i < req.body.members.length; i++) { 
             group.members.push(new ObjectId(req.body.members[i]));
         }
-    }
-    generateUrl(slug( group.name),function(url){
+    }*/
+    generateUrl(slug(group.name),function(url){
         group.url = url;
         group.save(function(err,result){
             if(err){
                 res.json({'type':false,'msg':'Problem occurred while creating Group'});
             }
+            console.log("  create : "+JSON.stringify(result));
             var data = result.toObject();
             data.type = true;
             winston.log(" Group created : "+JSON.stringify(data));
@@ -44,7 +47,7 @@ exports.getById = function(req,res){
 };
 
 exports.getByUrl = function(req,res){
-   Group.find({url:req.params.url},function(err,result){
+   Group.findOne({url:req.params.url},function(err,result){
        if(err){
            res.send(err);
        }
@@ -68,35 +71,32 @@ exports.getAllByCreator = function(req,res){
 
 
 exports.getAllByCallingUser = function(req,res){
-    var createdby_id = new ObjectId(req.user._id);
-    Group.find({'created_by':createdby_id},function(err,result){
+    Group.find({'created_by': new ObjectId(req.user._id)}).sort({'last_updated_at':-1}).exec(function(err,result){
         if(err){
             res.send(err);
         }
-        var data = result.toObject();
-        data.type = true;
-        res.json(data);
+        res.json(result);
     });
 };
 
 
 
 exports.update = function(req,res){
-    var id = req.params.id;
-    id = new ObjectId(id);
+    var id = new ObjectId(req.params.id);
     Group.findById(id,function(err,group){
         if(err){
             res.send(err);
         }
         group.description = req.body.description;
         group.name = req.body.name;
-        group.type = req.body.type;
-        group.created_by = req.user._id;
-        if(req.body.members){
+        group.group_type = req.body.group_type;
+        console.log(" ### type found in update : "+req.body.type);
+        group.created_by = new ObjectId(req.user._id);
+      /*  if(req.body.members){
             for (i = 0; i < req.body.members.length; i++) { 
                 group.members.push(new ObjectId(req.body.members[i]));
             }
-        }
+        }*/
         generateUrl(slug( group.name),function(url){
             group.url = url;
             group.save(function(err,result){
@@ -131,8 +131,8 @@ exports.delete = function(req,res){
 
 
 
-var slug = function(title){
-    return getSlug(title);
+var slug = function(name){
+    return getSlug(name);
 }
 
 var formatURL = function(cnt,url){
@@ -158,7 +158,7 @@ var generateUrl = function(url,callback){
             }else{
                 blogUrl.url = url;
                 blogUrl.save(function(err,result){
-                    console.log(" new Blog URL Created : "+JSON.stringify(result));
+                    //console.log(" new Blog URL Created : "+JSON.stringify(result));
                 });
                 callback(url);
             }
