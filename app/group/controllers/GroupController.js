@@ -120,9 +120,7 @@ exports.delete = function(req,res){
             if(err){
                 res.send(err);
             }
-            var data = result.toObject();
-            data.type = true;
-            res.json(data);
+            res.json(result);
         });
     }catch(e){
         res.send(404);

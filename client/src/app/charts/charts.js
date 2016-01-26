@@ -1,4 +1,4 @@
-angular.module('charts',['ngResource','ui.router','chart.directives']);
+angular.module('charts',['ngResource','ui.router','chart.directives','ui.bootstrap']);
 angular.module('charts').config(['$stateProvider','$urlRouterProvider',
                function($stateProvider,$urlRouterProvider){
                    $urlRouterProvider.otherwise("/");
@@ -41,8 +41,8 @@ angular.module('charts').factory('chartSocket',function(){
     return socket;
 });
 
-angular.module('charts').controller('ChartsController',['$scope','$resource','$state','$location','chartSocket','$rootScope',
-    function($scope,$resource,$state,$location,chartSocket,$rootScope){
+angular.module('charts').controller('ChartsController',['$scope','$resource','$state','$location','chartSocket','$rootScope','$uibModal',
+                                                        function($scope,$resource,$state,$location,chartSocket,$rootScope,$uibModal){
         $scope.accessor = function(d){ 
             return d.value;
         };
@@ -78,6 +78,6 @@ angular.module('charts').controller('ChartsController',['$scope','$resource','$s
             $scope.data.pop();
            // $scope.$apply();
           //  chartSocket.emit('user:updateChart',$scope.chart);
-        };
+        };                                                                                                   
     }
 ]);

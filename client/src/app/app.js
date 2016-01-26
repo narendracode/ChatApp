@@ -9,6 +9,7 @@ angular.module('app', [
     ,'charts'
     ,'blogs'
     ,'groups'
+    ,'ui.bootstrap'
 ]);
 
 angular.module('app').config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {

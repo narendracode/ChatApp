@@ -92,25 +92,15 @@ angular.module('blogs').run(function($rootScope, $location){
     });
 });
 
+
 angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','BlogUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,BlogUrlService,$uibModal,ShareDataService){
-    //var blogService = new BlogService();   
-   
-    // var shareDataService = new ShareDataService();
     var blogUrlService = new BlogUrlService();
-    
-   /* blogService.$get({id:$stateParams.id},function(result){
-        $scope.blog = result;
-    });
-   */ 
     blogUrlService.$get({url:$stateParams.url},function(result){
         $scope.blog = result;
     });
     
-    
-    
-    $scope.delete = function (size,blog_id) {
+    $scope.delete = function (size,blog_id){
         var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
             templateUrl: 'deleteModal.tpl.html',
             controller: 'ModalInstanceCtrl',
             size: size,
@@ -129,11 +119,41 @@ angular.module('blogs').controller('BlogDetailsController',['$scope','$resource'
             console.log('Modal dismissed at: ' + new Date());
         }); 
     };
+    
+    $scope.delete2 = function(size,blog_id){
+        console.log(" delete2 is called  size :"+size+"  ,blog_id:"+blog_id);
+        var modalInstanceDel2 = $uibModal.open({    
+        });
+    };
+    
+    
  
 }]);
 
 
+angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInstance','blog_id','BlogService','$resource','ShareDataService',function ($scope, $uibModalInstance, blog_id,BlogService,$resource,ShareDataService) {
+    var blogService = new BlogService();
 
+    $scope.blog_id = blog_id;
+    console.log(" blog id inside Modal instance : "+blog_id);
+    $scope.ok = function () {    
+        blogService.$delete({id:$scope.blog_id},function(results){
+
+            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                console.log("You are not authorized for this..");
+                $location.path("/")
+            }
+
+            ShareDataService.addMsg("You have successfully deleted the blog.");
+            $uibModalInstance.close($scope.blog_id);
+        });
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+}
+]);
 
 
 angular.module('blogs').controller('BlogsPublishedController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal', 'ShareDataService', '$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,ShareDataService,$timeout,$interval){
@@ -216,31 +236,7 @@ angular.module('blogs').controller('BlogsEditController',['$scope','$resource','
 }]);
 
 
-angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInstance','blog_id','BlogService','$resource','ShareDataService',function ($scope, $uibModalInstance, blog_id,BlogService,$resource,ShareDataService) {
-    var blogService = new BlogService();
-    var BlogResource = $resource('/blog/:id');
-    
-    $scope.blog_id = blog_id;
 
-    $scope.ok = function () {    
-        blogService.$delete({id:$scope.blog_id},function(results){
-            
-            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
-                console.log("You are not authorized for this..");
-                $location.path("/")
-            }
-            
-            ShareDataService.addMsg("You have successfully deleted the blog.");
-            $uibModalInstance.close($scope.blog_id);
-        });
-    };
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
-}
-                                                       
-]);
 
 
 angular.module('blogs').controller('BlogCreateController',['$scope','$resource','$state','$location','$rootScope', 'BlogService', '$uibModal','Upload', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,Upload,ShareDataService,$timeout,$interval){
@@ -364,40 +360,6 @@ angular.module('blogs').controller('BlogsController',['$scope','$resource','$sta
             $scope.sharedDateMsg = '';
         }, 3000);
     }
-    
-    $scope.delete = function (size,blog_id) {
-        var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
-            templateUrl: 'deleteModal.tpl.html',
-            controller: 'ModalInstanceCtrl',
-            size: size,
-            resolve: {
-                blog_id : function(){
-                    return blog_id;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (blog_id) {
-            $scope.sharedDateMsg = ShareDataService.getMsg();
-            BlogResource.query(function(results){
-               
-                if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
-                    console.log("You are not authorized for this..");
-                    $location.path("/")
-                }
-                
-                $scope.blogs = results;
-            });
-            
-            $timeout(function(){
-                ShareDataService.addMsg('');
-                $scope.sharedDateMsg = '';
-            }, 3000);
-        }, function () {
-            console.log('Modal dismissed at: ' + new Date());
-        }); 
-    };
     
     
     BlogResource.query(function(results){

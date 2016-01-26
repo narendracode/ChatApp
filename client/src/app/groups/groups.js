@@ -1,4 +1,5 @@
-angular.module('groups',['ngResource','ui.router','showdown.directives','ngSanitize','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard','group.services','blog.services']);
+angular.module('groups',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard','group.services']);
+
 
 angular.module('groups').config(['$stateProvider','$urlRouterProvider','$httpProvider',
                                  function($stateProvider,$urlRouterProvider,$httpProvider){
@@ -40,7 +41,20 @@ angular.module('groups').config(['$stateProvider','$urlRouterProvider','$httpPro
                                  
 }]);
 
+angular.module('groups').controller('GroupsController',['$scope','$resource','$state','$location','$rootScope', 'BlogService','GroupService', '$uibModal', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,GroupService,$uibModal,ShareDataService,$timeout,$interval){
 
+    var GroupUrlService = $resource('/group/:url');
+
+    GroupUrlService.query(function(results){
+        if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+            console.log("You are not authorized for this..");
+            $location.path("/")
+        }
+
+        console.log(" groups query result : "+JSON.stringify(results));
+        $scope.groups = results;
+    }); 
+}]);
 
 angular.module('groups').controller('GroupCreateController',['$scope','$resource','$state','$location','$rootScope', 'BlogService','GroupService','GroupUrlService', '$uibModal','Upload', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,GroupService,GroupUrlService,$uibModal,Upload,ShareDataService,$timeout,$interval){
     var GroupUrlService = $resource('/group/:url');
@@ -77,45 +91,51 @@ angular.module('groups').controller('GroupCreateController',['$scope','$resource
 }]);
 
 
-angular.module('groups').controller('GroupsController',['$scope','$resource','$state','$location','$rootScope', 'BlogService','GroupService', '$uibModal','Upload', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,$uibModal,Upload,ShareDataService,$timeout,$interval){
 
-    var GroupUrlService = $resource('/group/:url');
 
-    GroupUrlService.query(function(results){
-        if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
-            console.log("You are not authorized for this..");
-            $location.path("/")
-        }
-        
-        console.log(" groups query result : "+JSON.stringify(results));
-        $scope.groups = results;
-    });
 
+angular.module('groups').controller('GroupDeleteModalInstanceCtrl',['$scope','$uibModalInstance','group_id','GroupService','$resource','ShareDataService',function ($scope, $uibModalInstance,group_id,GroupService,$resource,ShareDataService) {
+    var groupService = new GroupService();
+    var groupResource = $resource('/group/:id');
+    $scope.group_id = group_id;
+
+    $scope.ok = function () {  
+        groupService.$delete({id:$scope.group_id},function(results){
+            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
+                console.log("You are not authorized for this..");
+                $location.path("/")
+            }
+
+            ShareDataService.addMsg("You have successfully deleted the group.");
+            $uibModalInstance.close($scope.group_id);
+        });
+    };
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
 }]);
 
-
-
-angular.module('groups').controller('GroupDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'GroupService','GroupUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,GroupService,GroupUrlService,BlogUrlService,$uibModal,ShareDataService){
+angular.module('groups').controller('GroupDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'GroupService','GroupUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,GroupService,GroupUrlService,$uibModal,ShareDataService){ 
     var groupUrlService = new GroupUrlService();
+    
     groupUrlService.$get({url:$stateParams.url},function(result){
         $scope.group = result;
     });
 
-    $scope.delete = function (size,group_id) {
-        var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
-            templateUrl: 'deleteModal.tpl.html',
-            controller: 'ModalInstanceCtrl',
+    $scope.delete = function(size,group_id) {
+        var groupModalInstance = $uibModal.open({
+            templateUrl: 'deleteGroupModal.tpl.html',
+            controller: 'GroupDeleteModalInstanceCtrl',
             size: size,
             resolve: {
-                blog_id : function(){
+                group_id : function(){
                     console.log(" inside resolve GroupDetailsController .. : "+group_id);
-                    return blog_id;
+                    return group_id;
                 }
             }
         });
 
-        modalInstance.result.then(function (group_id) {
+          groupModalInstance.result.then(function(group_id) {
             $scope.deletedGroupId = group_id;
             $location.path("/group")
         }, function () {
@@ -132,6 +152,20 @@ angular.module('groups').controller('GroupEditController',['$scope','$resource',
     
     groupUrlService.$get({url:$stateParams.url},function(result){
         $scope.group = result;
+        
+        var abc = $uibModal.open({
+            templateUrl: 'deleteGroupModal.tpl.html',
+            controller: 'GroupDeleteModalInstanceCtrl',
+            size: "sm",
+            resolve: {
+                group_id : function(){
+                    console.log(" inside resolve GroupDetailsController .. : abc");
+                    return "abc";
+                }
+            }
+        });
+        
+        
         if($scope.group.group_type === 'private'){
             $scope.group.group_type = true;
         }
@@ -162,28 +196,6 @@ angular.module('groups').controller('GroupEditController',['$scope','$resource',
 
 
 
-angular.module('groups').controller('ModalInstanceCtrl',['$scope','$uibModalInstance','group_id','GroupService','$resource','ShareDataService',function ($scope, $uibModalInstance, blog_id,BlogService,$resource,ShareDataService) {
-    var groupService = new GroupService();
-    var groupResource = $resource('/group/:id');
-    $scope.group_id = group_id;
-
-    $scope.ok = function () {    
-        groupService.$delete({id:$scope.group_id},function(results){
-
-            if(results.length>0 && !results[0].type && results[0].cause=='UNAUTHORIZED'){
-                console.log("You are not authorized for this..");
-                $location.path("/")
-            }
-
-            ShareDataService.addMsg("You have successfully deleted the group.");
-            $uibModalInstance.close($scope.group_id);
-        });
-    };
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
-}
-]);
 
 
 angular.module('groups').run(function($rootScope, $location){
