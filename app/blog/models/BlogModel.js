@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
+, Schema = mongoose.Schema
 
 var blogSchema = mongoose.Schema({
     content : {type: String, default: null},
@@ -11,7 +12,8 @@ var blogSchema = mongoose.Schema({
         name: {type: String, default: null},
         email:  {type: String, default: null}
     },
-    is_active: { type: Number, default: 1 }
+    is_active: { type: Number, default: 1 },
+    comments : {type: Schema.Types.ObjectId, ref: 'Comment' }
 });
 
 module.exports = mongoose.model('Blog', blogSchema);
