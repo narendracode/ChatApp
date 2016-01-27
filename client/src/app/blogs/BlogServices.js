@@ -30,6 +30,24 @@ module.factory('BlogService',function($resource){
   );
 });
 
+module.factory('CommentService',function($resource){
+    return $resource('blog/comment/:id', 
+                     {
+        id: '@id'
+    },
+                     {
+        'update': { method:'PUT' }
+    },
+                     {
+        'get': { method: 'GET', isArray: false }
+    },
+                     {
+        'delete': { method: 'DELETE'}
+    }
+                    );
+});
+
+
 
 module.factory('BlogUrlService',function($resource){
     return $resource('blog/:url', 

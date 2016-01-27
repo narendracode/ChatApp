@@ -1,4 +1,4 @@
-angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard']);
+angular.module('blogs',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard','angularMoment']);
 angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProvider',
                                 function($stateProvider,$urlRouterProvider,$httpProvider){
                                     // $urlRouterProvider.otherwise("/blog*");
@@ -50,6 +50,14 @@ angular.module('blogs').config(['$stateProvider','$urlRouterProvider','$httpProv
 
                                          }
                                      })
+                                    .state('blog_post_draft_detail',{
+                                         url: '/blog/posts/draft/:url',
+                                         templateUrl : 'app/blogs/post_draft.tpl.html',
+                                         controller : 'BlogDraftDetailsController',
+                                         resolve : {
+
+                                         }
+                                     })
                                     .state('blog_post_detail',{
                                          url: '/blog/posts/:url',
                                          templateUrl : 'app/blogs/post.tpl.html',
@@ -93,11 +101,70 @@ angular.module('blogs').run(function($rootScope, $location){
 });
 
 
-angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','BlogUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,BlogUrlService,$uibModal,ShareDataService){
+angular.module('blogs').controller('BlogDraftDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','BlogUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,BlogUrlService,$uibModal,ShareDataService){
     var blogUrlService = new BlogUrlService();
     blogUrlService.$get({url:$stateParams.url},function(result){
         $scope.blog = result;
     });
+    
+    $scope.delete = function (size,blog_id){
+        var modalInstance = $uibModal.open({
+            templateUrl: 'deleteModal.tpl.html',
+            controller: 'ModalInstanceCtrl',
+            size: size,
+            resolve: {
+                blog_id : function(){
+                    console.log(" inside resolve BlogsController .. : "+blog_id);
+                    return blog_id;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (blog_id) {
+            $scope.deletedBlogId = blog_id;
+            $location.path("/blog/drafts")
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        }); 
+    };
+    
+}]);
+
+
+angular.module('blogs').controller('BlogDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'BlogService','BlogUrlService','$uibModal', 'ShareDataService','CommentService' , function($scope,$resource,$state,$stateParams,$location,$rootScope,BlogService,BlogUrlService,$uibModal,ShareDataService,CommentService){
+    var blogUrlService = new BlogUrlService();
+    var commentService = new CommentService();
+    var CommentResource = $resource('/blog/comment/:id');
+    blogUrlService.$get({url:$stateParams.url},function(result){
+        console.log("Blog data : "+JSON.stringify(result));
+        $scope.blog = result;
+    });
+
+    $scope.comments = [
+        {
+            content:"This is first comment" 
+        },
+        {
+            content:"This is second comment" 
+        }
+    ];
+    
+    
+    $scope.addComment = function(){
+       // $scope.blog.comments.push({content: $scope.comment.content });
+        var commentResource = new CommentResource();
+        
+        commentResource.blog_id = $scope.blog._id;
+        commentResource.content = $scope.comment.content;
+        
+        commentResource.$save(function(result){
+            $scope.blog.comments.push(result);
+            $scope.comment.content = '';
+            console.log(" Comment save Result : "+JSON.stringify(result));
+        });
+        
+       
+    }
     
     $scope.delete = function (size,blog_id){
         var modalInstance = $uibModal.open({
@@ -119,16 +186,8 @@ angular.module('blogs').controller('BlogDetailsController',['$scope','$resource'
             console.log('Modal dismissed at: ' + new Date());
         }); 
     };
-    
-    $scope.delete2 = function(size,blog_id){
-        console.log(" delete2 is called  size :"+size+"  ,blog_id:"+blog_id);
-        var modalInstanceDel2 = $uibModal.open({    
-        });
-    };
-    
-    
- 
 }]);
+
 
 
 angular.module('blogs').controller('ModalInstanceCtrl',['$scope','$uibModalInstance','blog_id','BlogService','$resource','ShareDataService',function ($scope, $uibModalInstance, blog_id,BlogService,$resource,ShareDataService) {

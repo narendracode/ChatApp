@@ -147,12 +147,25 @@ exports.get = function(req,res){
 };
 
 exports.getByUrl = function(req,res){
-    Blog.findOne({url: req.params.url},function(err,result){
+   /* Blog.findOne({url: req.params.url}).populate('comments').exec(function (err, result){
         if(err){
             res.send(err);
         }
         res.json(result);
-    });
+    }); 
+    */
+    
+    Blog.findOne({url: req.params.url}).populate({
+            path : 'comments',
+        populate : { path: 'created_by', model: user, 
+                    select: '_id local.name profilePic' }
+        }
+    ).exec(function (err, result){
+        if(err){
+            res.send(err);
+        }
+        res.json(result);
+    }); 
 };
 
 

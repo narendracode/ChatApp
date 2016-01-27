@@ -13,7 +13,7 @@ var blogSchema = mongoose.Schema({
         email:  {type: String, default: null}
     },
     is_active: { type: Number, default: 1 },
-    comments : {type: Schema.Types.ObjectId, ref: 'Comment' }
+    comments : [{type: Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
 module.exports = mongoose.model('Blog', blogSchema);

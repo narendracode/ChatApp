@@ -9,17 +9,33 @@ var Comment = require('../models/CommentModel');
 
 exports.create = function(req,res){
     var comment = new Comment();
+    var blog_id = req.body.blog_id;
     comment.content = req.body.content;
     comment.last_updated_by =  new ObjectId(req.user._id);
     comment.created_by =  new ObjectId(req.user._id);
-    comment.save(function(err,result){
+    comment.blog = new ObjectId(req.body.blog_id);
+    console.log(" comment create is called : "+JSON.stringify(comment));
+    comment.save(function(err,comment){
         if(err){
             res.json({'type':false,'msg':'Problem occurred while saving comment'});
         }
-        var data = result.toObject();
-        data.type = true;
-        winston.log(" comment created : "+JSON.stringify(data));
-        res.json(data);
+       
+        Blog.findById(new ObjectId(blog_id),function(err,blog){
+            if(err){
+                res.json({'type':false,'msg':'Problem occurred while linking comment to blog'});
+            }
+            blog.comments.push(comment._id);
+            blog.save(function(err,blogWithComment){
+                if(err){
+                    res.json({'type':false,'msg':'Problem occurred while updating blog'});
+                }
+                console.log(" comment created .."+JSON.stringify(blogWithComment));
+                var data = comment.toObject();
+                data.type = true;
+                winston.log(" comment created : "+JSON.stringify(blogWithComment));
+                res.json(data);
+            });
+        });
     });
 };
 
@@ -35,6 +51,7 @@ exports.get = function(req,res){
 
 exports.update = function(req,res){
     //update a comment
+    var id = new ObjectId(req.params.id); 
     Comment.findById(id,function(err,comment){
         if(err){
             res.json({'type':false,'msg':'Problem occurred while finding comment'});

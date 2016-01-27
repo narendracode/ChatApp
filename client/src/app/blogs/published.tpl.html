@@ -18,16 +18,20 @@
         </div>
         <!-- Alert msg end-->
 
-        <div class="jumbotron" ng-repeat="blog in blogs"> 
-            <lt-markdown></lt-markdown>           
-            <div>
-                <a href="#/blog/posts/{{blog.url}}"><h2>{{blog.title}}</h2></a> 
-            </div>
-            <hr>
-            <div ng-bind-html = 'markdown'>
-                {{blog.content}}
-            </div>
-        </div>
+       <div class="row">   
+           <div class="jumbotron" ng-repeat="blog in blogs"> 
+               <lt-markdown></lt-markdown>           
+               <div>
+                   <a href="#/blog/posts/{{blog.url}}"><h2>{{blog.title}}</h2></a> 
+               </div>
+               <hr>
+               <div ng-bind-html = 'markdown'>
+                   {{blog.content}}
+               </div>
+           </div>
+       </div>
+
+        
     </div>
 </div>
 
