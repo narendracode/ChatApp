@@ -15,6 +15,7 @@ exports.create = function(req,res){
     comment.created_by =  new ObjectId(req.user._id);
     comment.blog = new ObjectId(req.body.blog_id);
     console.log(" comment create is called : "+JSON.stringify(comment));
+    
     comment.save(function(err,comment){
         if(err){
             res.json({'type':false,'msg':'Problem occurred while saving comment'});
@@ -29,11 +30,25 @@ exports.create = function(req,res){
                 if(err){
                     res.json({'type':false,'msg':'Problem occurred while updating blog'});
                 }
-                console.log(" comment created .."+JSON.stringify(blogWithComment));
+               
+                /*console.log(" comment created .."+JSON.stringify(blogWithComment));
                 var data = comment.toObject();
                 data.type = true;
                 winston.log(" comment created : "+JSON.stringify(blogWithComment));
-                res.json(data);
+                res.json(data);*/
+                
+                
+                Comment.findById(comment._id).populate(
+                    { path: 'created_by',
+                      model: User, 
+                      select: '_id local.name profilePic'
+                    }).exec(function(err,result){
+                    var data = result.toObject();
+                    data.type = true;
+                    console.log(" comment found : "+JSON.stringify(data));
+                    res.json(data);
+                });
+                
             });
         });
     });
