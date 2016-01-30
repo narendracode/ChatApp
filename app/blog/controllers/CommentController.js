@@ -30,14 +30,6 @@ exports.create = function(req,res){
                 if(err){
                     res.json({'type':false,'msg':'Problem occurred while updating blog'});
                 }
-               
-                /*console.log(" comment created .."+JSON.stringify(blogWithComment));
-                var data = comment.toObject();
-                data.type = true;
-                winston.log(" comment created : "+JSON.stringify(blogWithComment));
-                res.json(data);*/
-                
-                
                 Comment.findById(comment._id).populate(
                     { path: 'created_by',
                       model: User, 
