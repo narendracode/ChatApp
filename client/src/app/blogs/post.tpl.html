@@ -61,9 +61,7 @@
                            <div class="">
                                {{comment.content}}
                            </div>
-                           <span class="date sub-text">
-                               {{ comment.last_updated_at}}
-                           </span>
+                           <span class="date sub-text" am-time-ago="comment.last_updated_at"></span>
                        </div>
                    </li>
                </ul>
