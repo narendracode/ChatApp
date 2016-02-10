@@ -50,8 +50,8 @@ angular.module('charts').controller('ChartsController',['$scope','$resource','$s
         $scope.valName = '';
         $scope.val=0;
         $scope.data = [
-            { label: 'Sarah', value: 10 },
-            { label: 'Victor', value: 20 }
+            { label: 'Sarah', value: 50 },
+            { label: 'Victor', value: 10 }
         ];
         
         $scope.updateChart = function(){
