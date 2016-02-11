@@ -1,4 +1,4 @@
-angular.module('groups',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard','group.services']);
+angular.module('groups',['ngResource','ui.router','showdown.directives','ngSanitize','blog.services','ui.bootstrap','ngAnimate','ngFileUpload','angular-clipboard','group.services','animate.directives','autocomplete.directives']);
 
 
 angular.module('groups').config(['$stateProvider','$urlRouterProvider','$httpProvider',
@@ -22,6 +22,14 @@ angular.module('groups').config(['$stateProvider','$urlRouterProvider','$httpPro
 
                                          }
                                      })
+                                         .state('group_animate',{
+                                         url: '/group/animate',
+                                         templateUrl : 'app/groups/animate.tpl.html',
+                                         controller : 'GroupAnimateController',
+                                         resolve : {
+
+                                         }
+                                     })
                                          .state('group_detail',{
                                          url: '/group/:url',
                                          templateUrl : 'app/groups/group.tpl.html',
@@ -37,7 +45,8 @@ angular.module('groups').config(['$stateProvider','$urlRouterProvider','$httpPro
                                          resolve : {
 
                                          }
-                                     });        
+                                     })
+                                     ;        
                                  
 }]);
 
@@ -54,6 +63,12 @@ angular.module('groups').controller('GroupsController',['$scope','$resource','$s
         console.log(" groups query result : "+JSON.stringify(results));
         $scope.groups = results;
     }); 
+}]);
+
+
+
+angular.module('groups').controller('GroupAnimateController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'GroupService','GroupUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,GroupService,GroupUrlService,$uibModal,ShareDataService){ 
+
 }]);
 
 angular.module('groups').controller('GroupCreateController',['$scope','$resource','$state','$location','$rootScope', 'BlogService','GroupService','GroupUrlService', '$uibModal','Upload', 'ShareDataService','$timeout','$interval',function($scope,$resource,$state,$location,$rootScope,BlogService,GroupService,GroupUrlService,$uibModal,Upload,ShareDataService,$timeout,$interval){

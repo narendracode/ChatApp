@@ -10,6 +10,23 @@ body {
 }
 
 
+.animate-img{
+    display: block;
+    margin: 50px auto;
+}
+
+[animate-in-view] {
+    opacity: 0;
+    transform: translateY(150px);
+    transition: all 2s;
+}
+[animate-in-view].show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
 .commentBox .form-group:first-child, .actionBox .form-group:first-child {
     width:80%;
 }
