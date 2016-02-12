@@ -130,9 +130,27 @@ angular.module('groups').controller('GroupDeleteModalInstanceCtrl',['$scope','$u
     };
 }]);
 
-angular.module('groups').controller('GroupDetailsController',['$scope','$resource','$state','$stateParams','$location','$rootScope', 'GroupService','GroupUrlService','$uibModal', 'ShareDataService',  function($scope,$resource,$state,$stateParams,$location,$rootScope,GroupService,GroupUrlService,$uibModal,ShareDataService){ 
+angular.module('groups').controller('GroupDetailsController',[
+        '$scope'
+        ,'$resource'
+        ,'$state'
+        ,'$stateParams'
+        ,'$location'
+        ,'$rootScope'
+        ,'GroupService'
+        ,'GroupUrlService'
+        ,'$uibModal'
+        ,'ShareDataService'
+    ,function($scope,$resource,$state,$stateParams,$location,$rootScope,GroupService,GroupUrlService,$uibModal,ShareDataService){ 
     var groupUrlService = new GroupUrlService();
     
+    $scope.people = [
+            {firstName: "Daryl", surname: "Rowland", twitter: "@darylrowland", pic: "assets/images/daryl.jpg"},
+            {firstName: "Alan", surname: "Partridge", twitter: "@alangpartridge", pic: "assets/images/alanp.jpg"},
+            {firstName: "Annie", surname: "Rowland", twitter: "@anklesannie", pic: "assets/images/annie.jpg"},
+        {firstName: "Narendra", surname: "Soni", twitter: "@narenraks", pic: "assets/images/user.gif"}
+    ];
+        
     groupUrlService.$get({url:$stateParams.url},function(result){
         $scope.group = result;
     });
@@ -207,11 +225,6 @@ angular.module('groups').controller('GroupEditController',['$scope','$resource',
     }
 
 }]);
-
-
-
-
-
 
 angular.module('groups').run(function($rootScope, $location){
     return $rootScope.$on('$stateChangeStart', function(event,next){
